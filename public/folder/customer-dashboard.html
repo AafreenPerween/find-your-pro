@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Customer Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        overflow-x: hidden;
+      }
+
+      .offcanvas-body a {
+        color: white;
+        text-decoration: none;
+        padding: 0.75rem 1rem;
+        display: block;
+        border-radius: 5px;
+      }
+
+      .offcanvas-body a:hover {
+        border: 2px solid #ff9800;
+        color: white;
+      }
+
+      .offcanvas-body a.active {
+        background-color: #ff9800;
+        color: white;
+      }
+
+      .offcanvas {
+        background-color: #102e50;
+      }
+
+      .navbar {
+        background-color: #102e50;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container-fluid">
+        <button
+          class="btn btn-outline-light me-2"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#sidebar"
+        >
+          ☰
+        </button>
+        <span class="navbar-brand mb-0 h1 text-white">Customer Dashboard</span>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div
+      class="offcanvas offcanvas-start show"
+      data-bs-backdrop="false"
+      tabindex="-1"
+      id="sidebar"
+    >
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-white">Menu</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <a href="#" class="sidebar-link active" data-page="explore">Explore</a>
+        <a href="#" class="sidebar-link" data-page="bookings">Bookings</a>
+        <a href="#" class="sidebar-link" data-page="profile">My Profile</a>
+        <a href="#" class="sidebar-link" data-page="settings">Settings</a>
+        <a href="#" class="sidebar-link" data-page="help">Help</a>
+        <a href="#" class="sidebar-link text-danger" data-page="logout"
+          >Logout</a
+        >
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container-fluid p-4" id="main-content">
+      <h1>Welcome!</h1>
+      <p>Select a section from the sidebar to get started.</p>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+      // 🔐 Redirect if not logged in
+      if (!localStorage.getItem("customerToken")) {
+        window.location.href = "../index.html";
+      }
+
+      const contentMap = {
+        explore: `
+        <h2>Explore Service Providers</h2>
+        <p>Browse and discover available service providers in your area</p>
+        <div class="mb-4">
+            <label for="serviceFilter" class="form-label">Filter by Service Type</label>
+            <select class="form-select" id="serviceFilter">
+                <option value="all">All Services</option>
+                <option value="electrician">Electrician</option>
+                <option value="plumber">Plumber</option>
+                <option value="technician">Technician</option>
+                <option value="carpenter">Carpenter</option>
+                <option value="painter">Painter</option>
+            </select>
+        </div>
+        <div id="providerList" class="row"></div>`,
+
+        bookings: `<h2>My Bookings</h2><p>Track current and previous service requests here.</p>`,
+
+        profile: `
+        <h2>My Profile</h2>
+        <form id="profileForm">
+          <div class="col-md-8">
+            <div class="mb-2">
+              <label for="custName" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="custName" disabled />
+            </div>
+            <div class="mb-2">
+              <label for="custEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="custEmail" disabled />
+            </div>
+            <div class="mb-2">
+              <label for="custPhone" class="form-label">Phone</label>
+              <input type="tel" class="form-control" id="custPhone" disabled />
+            </div>
+            <div class="mb-2">
+              <label for="custAddress" class="form-label">Address</label>
+              <input type="text" class="form-control" id="custAddress" disabled />
+            </div>
+            <div class="mt-3">
+              <button type="button" id="editBtn" class="btn btn-outline-primary">Edit Profile</button>
+              <button type="submit" id="saveBtn" class="btn btn-primary d-none">Save Changes</button>
+              <button type="button" id="cancelBtn" class="btn btn-secondary d-none">Cancel</button>
+            </div>
+          </div>
+        </form>`,
+
+        settings: `<h2>Account Settings</h2><p>Manage your account preferences and security settings.</p>`,
+
+        help: `
+        <h2>Help & Support</h2>
+        <p>Need help? Contact our support team.</p>
+        <ul>
+          <li>Email: support@findyourpro.com</li>
+          <li>Phone: +1-800-123-4567</li>
+        </ul>`,
+      };
+
+      const links = document.querySelectorAll(".sidebar-link");
+      const mainContent = document.getElementById("main-content");
+
+      links.forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          links.forEach((l) => l.classList.remove("active"));
+          this.classList.add("active");
+
+          const page = this.getAttribute("data-page");
+
+          if (page === "logout") {
+            localStorage.removeItem("customerToken");
+            window.location.href = "../index.html";
+          } else {
+            mainContent.innerHTML =
+              contentMap[page] || `<h2>Page not found</h2>`;
+
+            if (page === "profile") {
+              setTimeout(loadCustomerProfile, 100);
+            } else if (page === "explore") {
+              setTimeout(() => {
+                loadProviders("all");
+                $("#serviceFilter").on("change", function () {
+                  loadProviders(this.value);
+                });
+              }, 100);
+            }
+          }
+
+          const sidebar = bootstrap.Offcanvas.getInstance(
+            document.getElementById("sidebar")
+          );
+          if (sidebar) sidebar.hide();
+        });
+      });
+
+      document.querySelector('.sidebar-link[data-page="explore"]').click();
+
+      function toggleProfileEditing(enable) {
+        ["custName", "custPhone", "custAddress"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.disabled = !enable;
+        });
+
+        document.getElementById("saveBtn").classList.toggle("d-none", !enable);
+        document
+          .getElementById("cancelBtn")
+          .classList.toggle("d-none", !enable);
+        document.getElementById("editBtn").classList.toggle("d-none", enable);
+      }
+
+      async function loadCustomerProfile() {
+        const token = localStorage.getItem("customerToken");
+
+        try {
+          const res = await fetch("/api/customer/dashboard/profile", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+
+          if (data.success && data.customer) {
+            const customer = data.customer;
+            document.getElementById("custName").value = customer.name || "";
+            document.getElementById("custEmail").value = customer.email || "";
+            document.getElementById("custPhone").value = customer.phone || "";
+            document.getElementById("custAddress").value =
+              customer.address || "";
+            toggleProfileEditing(false);
+          } else {
+            alert("Failed to load profile data.");
+          }
+        } catch (err) {
+          console.error("Failed to load customer profile:", err);
+        }
+      }
+
+      document.addEventListener("click", function (e) {
+        if (e.target.id === "editBtn") toggleProfileEditing(true);
+        if (e.target.id === "cancelBtn") {
+          loadCustomerProfile();
+          toggleProfileEditing(false);
+        }
+      });
+
+      document.addEventListener("submit", async function (e) {
+        if (e.target.id === "profileForm") {
+          e.preventDefault();
+          const token = localStorage.getItem("customerToken");
+
+          const payload = {
+            name: document.getElementById("custName").value,
+            phone: document.getElementById("custPhone").value,
+            address: document.getElementById("custAddress").value,
+          };
+
+          try {
+            const res = await fetch("/api/customer/dashboard/profile", {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            const result = await res.json();
+            alert(result.message || "Profile updated successfully.");
+            loadCustomerProfile();
+          } catch (err) {
+            console.error(err);
+            alert("Failed to update profile.");
+          }
+        }
+      });
+
+      function loadProviders(serviceType = "all") {
+        $.ajax({
+          url: `/api/providers?service=${serviceType}`,
+          method: "GET",
+          success: function (data) {
+            const providerList = $("#providerList");
+            providerList.empty();
+
+            data.forEach((provider) => {
+              providerList.append(`
+                <div class="col-md-4 mb-4">
+                  <div class="card">
+                    <img src="/uploads/providers/${
+                      provider.profile_pic || "default.jpg"
+                    }" 
+                         class="card-img-top" style="height: 200px; object-fit: cover;" 
+                         alt="${provider.name}">
+                    <div class="card-body">
+                      <h5 class="card-title">${provider.name}</h5>
+                      <p class="card-text">${provider.service_type}</p>
+                      <button class="btn btn-primary request-btn" data-provider-id="${
+                        provider.id
+                      }">
+                        Request
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `);
+            });
+
+            $(".request-btn").click(function () {
+              const providerId = $(this).data("provider-id");
+              const token = localStorage.getItem("customerToken");
+
+              $.ajax({
+                url: "/api/requests",
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+                data: JSON.stringify({ providerId }),
+                success: function (response) {
+                  alert(response.message || "Request sent successfully.");
+                },
+                error: function (err) {
+                  console.error("Error sending request:", err);
+                  alert("Failed to send request.");
+                },
+              });
+            });
+          },
+          error: function (err) {
+            console.error("Error loading providers:", err);
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
