@@ -5,13 +5,8 @@ const adminAuth = require('../middleware/adminAuthMiddleware');
 
 router.post('/login', adminController.adminLogin);
 
-router.get('/dashboard-data', adminAuth, (req, res) => {
-  res.json({
-    success: true,
-    message: 'Secure admin dashboard data',
-    adminId: req.admin.adminId
-  });
-});
+router.get('/dashboard-data', adminAuth, adminController.getDashboardData);
+
 router.get('/test-admin', (req, res) => {
     db.query('SELECT * FROM admins', (err, results) => {
       if (err) {
@@ -22,6 +17,5 @@ router.get('/test-admin', (req, res) => {
       res.json(results);
     });
   });
-  
 
 module.exports = router;
