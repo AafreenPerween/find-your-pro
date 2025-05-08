@@ -90,3 +90,126 @@ exports.getDashboardData = async (req, res) => {
       .json({ success: false, message: "Error fetching dashboard data" });
   }
 };
+
+
+
+  // serviceRequests
+  exports.getAllServiceRequests = async (req, res) => {
+    try {
+      const [results] = await db.query(`
+         SELECT
+         r.request_id AS id,
+         c.name           AS customer,
+         p.name           AS worker,
+         r.status,
+         r.service_type,
+         DATE_FORMAT(r.created_at, '%Y-%m-%d') AS date
+       FROM requests r
+       LEFT JOIN customers c  ON r.customer_id = c.customer_id
+       LEFT JOIN providers p  ON r.provider_id = p.provider_id
+       ORDER BY r.created_at DESC
+      `);
+      
+      // Check if results are empty
+      if (!results || results.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No service requests found",
+        });
+      }
+  
+      res.json(results); // Send directly what the frontend expects
+    } catch (err) {
+      console.error("❌ Error fetching requests:", err);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch service requests",
+        error: err.message, // Include error message in the response for debugging
+      });
+    }
+  };
+  
+  
+// Get all workers
+// Get all providers (aka workers)
+exports.getAllProviders = async (req, res) => {
+  try {
+    const [results] = await db.query('SELECT * FROM providers');
+    
+    if (!results || results.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No providers found"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Providers fetched successfully",
+      data: results
+    });
+  } catch (err) {
+    console.error('❌ Error fetching providers:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching providers',
+      error: err.message
+    });
+  }
+};
+
+
+
+// Get all customers
+
+// exports.getAllCustomers = async (req, res) => {
+//   try {
+//     const [results] = await db.query('SELECT * FROM customers');
+//     console.log("Results:", results);
+//     if (!results || results.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "No customers found"
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Customers fetched successfully",
+//       data: results
+//     });
+//   } catch (err) {
+//     console.error('❌ Error fetching customers:', err);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Server error while fetching customers',
+//       error: err.message
+//     });
+//   }
+// };
+   
+
+
+exports.getAllCustomers = async (req, res) => {
+  try {
+    const [results] = await db.query('SELECT * FROM customers');
+    if (!results || results.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No customers found"
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Customers fetched successfully",
+      data: results
+    });
+  } catch (err) {
+    console.error('❌ Error fetching customers:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching customers',
+      error: err.message
+    });
+  }
+};

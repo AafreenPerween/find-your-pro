@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Workers | Find You Pro</title>
+  <title>Manage Providers | Find You Pro</title>
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
 </head>
@@ -35,29 +35,29 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="workers.html" class="nav-link active">
+            <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-user-cog"></i>
               <p>Manage Workers</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./customer-admin.html" class="nav-link ">
+            <a href="customer-admin.html" class="nav-link ">
               <i class="nav-icon fas fa-users"></i>
               <p>Manage Customers</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="./service-requests.html" class="nav-link">
-              <i class="nav-icon fas fa-briefcase"></i>
+            <a href="./service-requests.html" class="nav-link ">
+              <i class="nav-icon fas fa-briefcase "></i>
               <p>Service Requests</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="./analytics.html" class="nav-link">
+          <!-- <li class="nav-item">
+            <a href="analytics.html" class="nav-link">
               <i class="nav-icon fas fa-chart-line"></i>
               <p>Analytics</p>
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a href="./settings.html" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
@@ -69,7 +69,8 @@
               <i class="nav-icon fas fa-sign-out-alt"></i>
               <p>Logout</p>
             </a>
-          </li> 
+          </li>
+          
         </ul>
       </nav>
     </div>
@@ -81,7 +82,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Manage Workers</h1>
+            <h1 class="m-0">Manage Providers</h1>
           </div>
         </div>
       </div>
@@ -91,8 +92,7 @@
       <div class="container-fluid">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Worker List</h3>
-            <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addWorkerModal"><i class="fas fa-plus"></i> Add Worker</button>
+            <h3 class="card-title">Provider List</h3>
           </div>
           <div class="card-body table-responsive p-0">
             <table class="table table-hover text-nowrap">
@@ -103,10 +103,9 @@
                   <th>Profession</th>
                   <th>Phone</th>
                   <th>Location</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
-              <tbody id="workerTableBody">
+              <tbody id="providerTableBody">
                 <!-- Dynamic content will be injected here -->
               </tbody>
             </table>
@@ -116,96 +115,48 @@
     </section>
   </div>
 
-  <!-- Footer -->
-  <footer class="main-footer">
-    <strong>&copy; 2025 <a href="#">Find You Pro</a>.</strong> All rights reserved.
-  </footer>
-</div>
-
-<!-- Add Worker Modal -->
-<div class="modal fade" id="addWorkerModal" tabindex="-1" role="dialog" aria-labelledby="addWorkerModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add New Worker</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="addWorkerForm">
-          <div class="form-group">
-            <label>Name</label>
-            <input type="text" class="form-control" id="workerName" required>
-          </div>
-          <div class="form-group">
-            <label>Profession</label>
-            <input type="text" class="form-control" id="workerProfession" required>
-          </div>
-          <div class="form-group">
-            <label>Phone</label>
-            <input type="text" class="form-control" id="workerPhone" required>
-          </div>
-          <div class="form-group">
-            <label>Location</label>
-            <input type="text" class="form-control" id="workerLocation" required>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" form="addWorkerForm" class="btn btn-primary">Save Worker</button>
-      </div>
-    </div>
+  <!-- Loading Spinner -->
+  <div id="loadingSpinner" style="display:none;" class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
   </div>
-</div>
 
-<script src="../plugins/jquery/jquery.min.js"></script>
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="../dist/js/adminlte.min.js"></script>
-<script>
-  async function fetchWorkers() {
-    const res = await fetch('http://localhost:5000/api/admin/workers');
-    const workers = await res.json();
-    const table = document.getElementById('workerTableBody');
-    table.innerHTML = '';
-    workers.forEach(w => {
-      table.innerHTML += `
-        <tr>
-          <td>${w.id}</td>
-          <td>${w.name}</td>
-          <td>${w.profession}</td>
-          <td>${w.phone}</td>
-          <td>${w.location}</td>
-          <td>
-            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-          </td>
-        </tr>`;
+  <script src="../plugins/jquery/jquery.min.js"></script>
+  <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../dist/js/adminlte.min.js"></script>
+  <script>
+    async function fetchProviders() {
+      const spinner = document.getElementById("loadingSpinner");
+      if (spinner) spinner.style.display = "block"; // Ensure it exists
+
+      try {
+        const res = await fetch('http://localhost:5000/api/admin/providers');
+        const response = await res.json();
+        if (!response.success) throw new Error(response.message);
+        const providers = response.data;
+        
+        const table = document.getElementById('providerTableBody');
+        table.innerHTML = '';
+        providers.forEach(p => {
+          table.innerHTML += `
+            <tr>
+              <td>${p.provider_id}</td>
+              <td>${p.name}</td>
+              <td>${p.service_type}</td>
+              <td>${p.phone}</td>
+              <td>${p.address}</td>
+            </tr>`;
+        });
+      } catch (err) {
+        console.error("Error fetching providers:", err);
+        alert("Could not load provider data.");
+      }
+
+      if (spinner) spinner.style.display = "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchProviders();
     });
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    fetchWorkers();
-
-    document.getElementById('addWorkerForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const newWorker = {
-        name: document.getElementById('workerName').value,
-        profession: document.getElementById('workerProfession').value,
-        phone: document.getElementById('workerPhone').value,
-        location: document.getElementById('workerLocation').value
-      };
-      
-      await fetch('http://localhost:5000/api/admin/workers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newWorker)
-      });
-      $('#addWorkerModal').modal('hide');
-      fetchWorkers();
-    });
-  });
-</script>
+  </script>
 </body>
 </html>

@@ -52,12 +52,12 @@
               <p>Service Requests</p>
             </a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="analytics.html" class="nav-link">
               <i class="nav-icon fas fa-chart-line"></i>
               <p>Analytics</p>
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a href="settings.html" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
@@ -123,24 +123,64 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../dist/js/adminlte.min.js"></script>
 <script>
-  async function fetchCustomers() {
-    const res = await fetch('http://localhost:3000/api/customers');
-    const customers = await res.json();
-    const table = document.getElementById('customerTableBody');
-    table.innerHTML = '';
-    customers.forEach(c => {
-      table.innerHTML += `
-        <tr>
-          <td>${c.id}</td>
-          <td>${c.name}</td>
-          <td>${c.email}</td>
-          <td>${c.phone}</td>
-          <td>${new Date(c.registered_on).toLocaleDateString()}</td>
-        </tr>`;
-    });
-  }
+  // async function fetchCustomers() {
+    // const res = await fetch('http://localhost:5000/api/admin/customers');
+    // const customers = await res.json();
+    // const table = document.getElementById('customerTableBody');
+    // table.innerHTML = '';
+   
+  //   fetch('http://localhost:5000/api/admin/customers')
+  //  .then(response => response.json())
+  //  .then(data => {
+  //     console.log('API Response:', data); // Log the actual response structure
+  //  })
+  //  .catch(error => console.error('Fetch Error:', error));
+  //   customers.forEach(c => {
+  //     table.innerHTML += `
+  //       <tr>
+  //         <td>${c.customer_id}</td>
+  //         <td>${c.name}</td>
+  //         <td>${c.email}</td>
+  //         <td>${c.phone}</td>
+  //         <td>${c.created_at}</td>
+  //       </tr>`;
+  //   });
+  // }
 
-  document.addEventListener('DOMContentLoaded', fetchCustomers);
+  // document.addEventListener('DOMContentLoaded', fetchCustomers);
+
+
+  async function fetchCustomers() {
+    try {
+        const response = await fetch('http://localhost:5000/api/admin/customers');
+        const data = await response.json();
+
+        console.log('API Response:', data); // Debugging: Log the response structure
+        const customers = data.data; // Access the correct array
+
+        // Get the table body element
+        const table = document.getElementById('customerTableBody');
+        table.innerHTML = ''; // Clear previous entries
+
+        // Loop through customers and append rows
+        customers.forEach(c => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${c.customer_id}</td>
+                <td>${c.name}</td>
+                <td>${c.email}</td>
+                <td>${c.phone}</td>
+                <td>${c.created_at || 'N/A'}</td>
+            `;
+            table.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Fetch Error:', error);
+    }
+}
+
+// Ensure the function runs when the page loads
+document.addEventListener('DOMContentLoaded', fetchCustomers);
 </script>
 </body>
 </html>

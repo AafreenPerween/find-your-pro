@@ -6,6 +6,17 @@ const adminAuth = require('../middleware/adminAuthMiddleware');
 router.post('/login', adminController.adminLogin);
 
 router.get('/dashboard-data', adminAuth, adminController.getDashboardData);
+// This is what your frontend fetches
+router.get('/api/requests', adminController.getAllServiceRequests);
+
+router.get('/providers', adminController.getAllProviders);
+
+
+
+router.get('/customers', adminController.getAllCustomers); 
+
+
+
 
 router.get('/test-admin', (req, res) => {
     db.query('SELECT * FROM admins', (err, results) => {
