@@ -50,12 +50,12 @@
               <p>Service Requests</p>
             </a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="analytics.html" class="nav-link">
               <i class="nav-icon fas fa-chart-line"></i>
               <p>Analytics</p>
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a href="./settings.html" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
@@ -85,6 +85,8 @@
       </div>
     </div>
 
+
+
     <section class="content">
       <div class="container-fluid">
         <div class="card">
@@ -104,13 +106,13 @@
                 </tr>
               </thead>
               <tbody id="requestTableBody">
-                <!-- Data will be inserted here -->
-              </tbody>
+                <!-- Dynamic rows go here -->
+          </tbody>
             </table>
           </div>
         </div>
       </div>
-    </section>
+    </section> 
   </div>
 
   <footer class="main-footer">
@@ -122,24 +124,49 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../dist/js/adminlte.min.js"></script>
 <script>
-  async function fetchRequests() {
-    const res = await fetch('http://localhost:3000/api/requests');
-    const requests = await res.json();
-    const table = document.getElementById('requestTableBody');
-    table.innerHTML = '';
-    requests.forEach(r => {
-      table.innerHTML += `
-        <tr>
-          <td>${r.id}</td>
-          <td>${r.customer}</td>
-          <td>${r.worker}</td>
-          <td>${r.service_name}</td>
-          <td><span class="badge badge-${r.status === 'Completed' ? 'success' : r.status === 'Cancelled' ? 'danger' : 'warning'}">${r.status}</span></td>
-          <td>${new Date(r.requested_on).toLocaleDateString()}</td>
-        </tr>`;
+ const fetchServiceRequests = async () => {
+  try {
+    const res = await fetch('http://localhost:5000/api/admin/api/requests', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log("Full response data:", data);
+console.log("Inspecting first item in detail:");
+console.log(JSON.stringify(data[0], null, 2));
+
+
+      const tableBody = document.getElementById('requestTableBody');
+      tableBody.innerHTML = ''; // Clear any existing rows
+
+      data.forEach(request => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${request.id}</td>
+          <td>${request.customer}</td>
+          <td>${request.worker}</td>
+          <td>${request.service_type}</td>
+          <td>${request.status}</td>
+          <td>${request.date}</td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    } else {
+      console.error('Failed to fetch requests:', res.statusText);
+    }
+  } catch (err) {
+    console.error('Error fetching service requests:', err);
   }
-  document.addEventListener('DOMContentLoaded', fetchRequests);
+};
+
+fetchServiceRequests();
+
 </script>
 </body>
 </html>
