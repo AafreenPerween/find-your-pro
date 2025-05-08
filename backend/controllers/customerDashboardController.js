@@ -91,18 +91,33 @@ const getProviderDetails = async (req, res) => {
 const createBookingRequest = async (req, res) => {
   const customerId = req.customer.customer_id;
   const { provider_id, preferred_date, preferred_time, notes } = req.body;
+  console.log("Booking data:", { customerId, provider_id, preferred_date, preferred_time, notes });
 
   if (!provider_id || !preferred_date || !preferred_time) {
-    return res.status(400).json({ success: false, message: "Missing booking fields" });
+    return res.status(400).json({
+      success: false,
+      message: "Missing booking fields",
+      missingFields: {
+        provider_id: !!provider_id,
+        preferred_date: !!preferred_date,
+        preferred_time: !!preferred_time
+      }
+    });
   }
+  console.log("Booking data:", { customerId, provider_id, preferred_date, preferred_time, notes });
 
-  await db.query(
-    `INSERT INTO booking_requests (customer_id, provider_id, preferred_date, preferred_time, notes, status)
-     VALUES (?, ?, ?, ?, ?, 'pending')`,
-    [customerId, provider_id, preferred_date, preferred_time, notes || ""]
-  );
+  try {
+    await db.query(
+      `INSERT INTO requests (customer_id, provider_id, preferred_date, preferred_time, notes, status)
+       VALUES (?, ?, ?, ?, ?, 'pending')`,
+      [customerId, provider_id, preferred_date, preferred_time, notes || ""]
+    );
 
-  res.json({ success: true, message: "Booking request submitted" });
+    res.json({ success: true, message: "Booking request submitted" });
+  } catch (error) {
+    console.error("Error creating booking request:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
 };
 
 

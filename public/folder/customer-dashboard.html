@@ -342,13 +342,14 @@
             <div class="col-md-8">
               <h2>${provider.name}</h2>
               <p><strong>Service:</strong> ${provider.service_type}</p>
+              <p><strong>Experience:</strong> ${provider.experience}years</p>
               <p><strong>Address:</strong> ${provider.address}</p>
               <!-- <p><strong>Email:</strong> ${provider.email}</p>
               <p><strong>Phone:</strong> ${provider.phone}</p>
               <p><strong>Rating:</strong> ${provider.avg_rating}</p> -->
               <h4>Leave a Booking Request</h4>
               <form id="bookingForm">
-                <input type="hidden" id="provider_id" name="provider_id" value="${
+                <input type="hidden" name="provider_id" value="${
                   provider.provider_id
                 }" />
                 <div class="mb-2">
@@ -381,8 +382,8 @@
 
         const formData = {
           provider_id: this.provider_id.value,
-          date: this.date.value,
-          time: this.time.value,
+          preferred_date: document.getElementById("preferred_date").value,
+          preferred_time: document.getElementById("preferred_time").value,
           notes: this.notes.value,
         };
 
