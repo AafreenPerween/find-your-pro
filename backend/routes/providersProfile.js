@@ -22,4 +22,9 @@ router.get('/', async (req, res) => {
     }
 });
 
+const { getProviderById } = require("../controllers/publicProviderController");
+
+router.get("/:id", getProviderById); // 👈 public route for customer use
+
+
 module.exports = router;

@@ -81,6 +81,88 @@
       .alert {
         margin-top: 10px;
       }
+
+      /* Basic Styling for the Table */
+      #availabilityTableBody {
+        font-size: 14px;
+      }
+
+      table.table-bordered {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+      }
+
+      table.table-bordered th,
+      table.table-bordered td {
+        padding: 12px;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid #dee2e6;
+      }
+
+      table.table-bordered th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        color: #495057;
+      }
+
+      table.table-bordered td input[type="checkbox"] {
+        transform: scale(1.3);
+        cursor: pointer;
+      }
+
+      table.table-bordered td input[type="checkbox"]:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      /* Hover Effect for Table Rows */
+      table.table-bordered tr:hover {
+        background-color: #f1f1f1;
+      }
+
+      /* Table Header Styling */
+      th {
+        font-size: 16px;
+        font-weight: 600;
+        background-color: #f1f1f1;
+      }
+
+      /* Day Column Styling */
+      td:first-child {
+        font-weight: bold;
+        color: #343a40;
+      }
+
+      /* Button Styling for Save Availability */
+      #availabilityForm button[type="submit"] {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #28a745;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #availabilityForm button[type="submit"]:hover {
+        background-color: #218838;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Checkbox Styling */
+      input[type="checkbox"] {
+        transform: scale(1.2);
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      input[type="checkbox"]:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
     </style>
   </head>
   <body>
@@ -144,7 +226,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Scripts -->
     <script>
       // 🔐 Redirect to login page if not logged in
       if (!localStorage.getItem("providerToken")) {
@@ -155,60 +236,50 @@
         requests: `<h2>Booking Requests</h2><p>View and respond to incoming service requests from customers.</p>`,
         history: `<h2>Booking History</h2><p>Review all your completed and past service bookings.</p>`,
         reviews: `<h2>Reviews & Ratings</h2><p>Check what customers are saying about your services.</p>`,
-        availability: `<h2>Manage Availability</h2><p>Update your working hours, days off, and availability status here.</p>`,
+        availability: `
+          <div id="manage-availability" class="dashboard-section">
+            <div class="container mt-4">
+              <h4 class="mb-3">Manage Availability</h4>
+              <form id="availabilityForm">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Day</th>
+                      <th>Morning (8:00-12:00)</th>
+                      <th>Afternoon (12:00-4:00)</th>
+                      <th>Evening (4:00-8:00)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="availabilityTableBody"></tbody>
+                </table>
+                <button type="submit" class="btn btn-primary">Save Availability</button>
+              </form>
+            </div>
+          </div>
+        `,
         profile: `
           <h2>My Profile</h2>
           <form id="profileForm" class="row g-3">
             <div class="col-md-4 text-center">
               <label for="profilePic" class="profile-pic-label disabled">
-                <img
-                  src="default-profile.jpg"
-                  alt="Profile Picture"
-                  id="profilePicPreview"
-                  class="profile-pic-preview"
-                  onerror="this.src='default-profile.jpg'"
-                />
-                <input
-                  type="file"
-                  class="d-none"
-                  id="profilePic"
-                  accept="image/*"
-                />
+                <img src="default-profile.jpg" alt="Profile Picture" id="profilePicPreview" class="profile-pic-preview" onerror="this.src='default-profile.jpg'" />
+                <input type="file" class="d-none" id="profilePic" accept="image/*" />
               </label>
             </div>
             <div class="col-md-8">
-              <div class="mb-2">
-                <label for="provName" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="provName" disabled />
-              </div>
-              <div class="mb-2">
-                <label for="provEmail" class="form-label">Email</label>
-                <input type="email" class="form-control" id="provEmail" disabled />
-              </div>
-              <div class="mb-2">
-                <label for="provPhone" class="form-label">Phone</label>
-                <input type="tel" class="form-control" id="provPhone" disabled />
-              </div>
-              <div class="mb-2">
-                <label for="provAddress" class="form-label">Address</label>
-                <input type="text" class="form-control" id="provAddress" disabled />
-              </div>
-              <div class="mb-2">
-                <label for="provService" class="form-label">Service Type</label>
-                <input type="text" id="provService" name="service_type" class="form-control" disabled>
-              </div>
-              <div class="mb-2">
-                <label for="provExperience" class="form-label">Experience (Years)</label>
-                <input type="number" class="form-control" id="provExperience" min="1" max="50" disabled />
-              </div>
+              <div class="mb-2"><label for="provName" class="form-label">Full Name</label><input type="text" class="form-control" id="provName" disabled /></div>
+              <div class="mb-2"><label for="provEmail" class="form-label">Email</label><input type="email" class="form-control" id="provEmail" disabled /></div>
+              <div class="mb-2"><label for="provPhone" class="form-label">Phone</label><input type="tel" class="form-control" id="provPhone" disabled /></div>
+              <div class="mb-2"><label for="provAddress" class="form-label">Address</label><input type="text" class="form-control" id="provAddress" disabled /></div>
+              <div class="mb-2"><label for="provService" class="form-label">Service Type</label><input type="text" id="provService" class="form-control" disabled /></div>
+              <div class="mb-2"><label for="provExperience" class="form-label">Experience (Years)</label><input type="number" class="form-control" id="provExperience" min="1" max="50" disabled /></div>
               <div class="mt-3">
                 <button type="button" id="editBtn" class="btn btn-outline-primary">Edit Profile</button>
                 <button type="submit" id="saveBtn" class="btn btn-primary d-none">Save Changes</button>
                 <button type="button" id="cancelBtn" class="btn btn-secondary d-none">Cancel</button>
               </div>
             </div>
-          </form>
-        `,
+          </form>`,
         settings: `<h2>Settings</h2><p>Configure your account preferences, notification settings, and privacy controls.</p>`,
         help: `<h2>Help & Support</h2><p>Need assistance? Contact our team for support.</p><ul><li>Email: support@findyourpro.com</li><li>Phone: +1-800-123-4567</li></ul>`,
       };
@@ -230,8 +301,12 @@
           } else {
             mainContent.innerHTML =
               contentMap[page] || `<h2>Page not found</h2>`;
-            if (page === "profile") {
-              setTimeout(loadProviderProfile, 100);
+            if (page === "profile") requestAnimationFrame(loadProviderProfile);
+            if (page === "availability") {
+              requestAnimationFrame(() => {
+                renderAvailabilityTable();
+                loadAvailability();
+              });
             }
           }
 
@@ -244,6 +319,7 @@
 
       document.querySelector('.sidebar-link[data-page="requests"]').click();
 
+      // Handle Profile Editing
       function toggleProfileEditing(enable) {
         [
           "provName",
@@ -264,18 +340,16 @@
         document.getElementById("editBtn").classList.toggle("d-none", enable);
       }
 
+      // Load Provider Profile
       async function loadProviderProfile() {
         const token = localStorage.getItem("providerToken");
-
         try {
           const res = await fetch("/api/provider/dashboard/profile", {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
-
           if (data.success && data.provider) {
             const provider = data.provider;
-
             document.getElementById("provName").value = provider.name || "";
             document.getElementById("provEmail").value = provider.email || "";
             document.getElementById("provPhone").value = provider.phone || "";
@@ -285,13 +359,10 @@
               provider.service_type || "";
             document.getElementById("provExperience").value =
               provider.experience || "";
-
             const profileImage = provider.profile_pic
               ? `http://localhost:5000/uploads/providers/${provider.profile_pic}`
               : "default-profile.jpg";
-
             document.getElementById("profilePicPreview").src = profileImage;
-
             document
               .getElementById("profilePic")
               .addEventListener("change", function (event) {
@@ -301,25 +372,14 @@
                     URL.createObjectURL(file);
                 }
               });
-
             toggleProfileEditing(false);
           } else {
-            alert("Failed to load profile data.");
+            showAlert("danger", "Failed to load profile data.");
           }
         } catch (err) {
           console.error("Failed to load provider profile:", err);
           showAlert("danger", "Failed to load profile data.");
         }
-      }
-
-      function showAlert(type, message) {
-        const alertHTML = `
-          <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            <strong>${message}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        `;
-        alertContainer.innerHTML = alertHTML;
       }
 
       document.addEventListener("click", function (e) {
@@ -331,10 +391,10 @@
       });
 
       document.addEventListener("submit", async function (e) {
+        const token = localStorage.getItem("providerToken");
+
         if (e.target.id === "profileForm") {
           e.preventDefault();
-          const token = localStorage.getItem("providerToken");
-
           const formData = new FormData();
           formData.append("name", document.getElementById("provName").value);
           formData.append("phone", document.getElementById("provPhone").value);
@@ -346,7 +406,6 @@
             "experience",
             document.getElementById("provExperience").value
           );
-
           const pic = document.getElementById("profilePic").files[0];
           if (pic) formData.append("profile_pic", pic);
 
@@ -356,19 +415,120 @@
               headers: { Authorization: `Bearer ${token}` },
               body: formData,
             });
-
             const result = await res.json();
-            showAlert(
-              "success",
-              result.message || "Profile updated successfully."
-            );
+            showAlert(result.success ? "success" : "danger", result.message);
             loadProviderProfile();
           } catch (err) {
-            console.error(err);
+            console.error("Error saving profile:", err);
             showAlert("danger", "Failed to update profile.");
           }
         }
+
+        if (e.target.id === "availabilityForm") {
+          e.preventDefault();
+
+          // Collect availability data from checkboxes
+          const availabilityData = [];
+          const days = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+          ];
+          const slots = ["morning", "afternoon", "evening"];
+          days.forEach((day) => {
+            slots.forEach((slot) => {
+              const checkbox = document.getElementById(`${day}-${slot}`);
+              if (checkbox && checkbox.checked) {
+                availabilityData.push({
+                  day_of_week: day,
+                  time_slot: slot,
+                  is_available: true,
+                });
+              }
+            });
+          });
+
+          try {
+            const res = await fetch("/api/provider/dashboard/availability", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ availability: availabilityData }),
+            });
+            const result = await res.json();
+            showAlert(result.success ? "success" : "danger", result.message);
+          } catch (err) {
+            console.error("Error saving availability:", err);
+            showAlert("danger", "Failed to update availability.");
+          }
+        }
       });
+
+      function showAlert(type, message) {
+        alertContainer.innerHTML = `<div class="alert alert-${type} mt-3">${message}</div>`;
+      }
+
+      // Render the Availability Table
+      function renderAvailabilityTable() {
+        const days = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ];
+        const slots = ["morning", "afternoon", "evening"];
+
+        const tableBody = document.getElementById("availabilityTableBody");
+        tableBody.innerHTML = "";
+        days.forEach((day) => {
+          const row = document.createElement("tr");
+          const dayCell = document.createElement("td");
+          dayCell.textContent = day;
+          row.appendChild(dayCell);
+
+          slots.forEach((slot) => {
+            const slotCell = document.createElement("td");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `${day}-${slot}`;
+            checkbox.classList.add("form-check-input");
+            slotCell.appendChild(checkbox);
+            row.appendChild(slotCell);
+          });
+          tableBody.appendChild(row);
+        });
+      }
+
+      async function loadAvailability() {
+        const token = localStorage.getItem("providerToken");
+        try {
+          const res = await fetch("/api/provider/dashboard/availability", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (data.success && data.availability) {
+            data.availability.forEach((item) => {
+              const checkbox = document.getElementById(
+                `${item.day_of_week}-${item.time_slot}`
+              );
+              if (checkbox) {
+                checkbox.checked = item.is_available;
+              }
+            });
+          }
+        } catch (err) {
+          console.error("Error loading availability:", err);
+        }
+      }
     </script>
   </body>
 </html>

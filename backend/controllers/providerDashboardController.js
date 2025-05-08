@@ -59,7 +59,60 @@ const updateProviderProfile = async (req, res) => {
   }
 };
 
+
+// ✅ Get Provider Availability
+const getProviderAvailability = async (req, res) => {
+  const providerId = req.provider.provider_id;
+
+  try {
+    const [availability] = await db.query(
+      `SELECT day_of_week, time_slot, is_available
+       FROM provider_availability
+       WHERE provider_id = ?
+       ORDER BY FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),
+                FIELD(time_slot, 'morning', 'afternoon', 'evening')`,
+      [providerId]
+    );
+
+    res.json({ success: true, availability });
+  } catch (error) {
+    console.error("Error fetching availability:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+// ✅ Update Provider Availability
+const updateProviderAvailability = async (req, res) => {
+  const providerId = req.provider.provider_id;
+  const availabilityUpdates = req.body.availability; // should be an array
+
+  if (!Array.isArray(availabilityUpdates)) {
+    return res.status(400).json({ success: false, message: "Invalid availability format" });
+  }
+
+  try {
+    const updatePromises = availabilityUpdates.map(({ day_of_week, time_slot, is_available }) =>
+      db.query(
+        `INSERT INTO provider_availability (provider_id, day_of_week, time_slot, is_available)
+         VALUES (?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE is_available = VALUES(is_available)`,
+        [providerId, day_of_week, time_slot, is_available]
+      )
+    );
+
+    await Promise.all(updatePromises);
+
+    res.json({ success: true, message: "Availability updated successfully" });
+  } catch (error) {
+    console.error("Error updating availability:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   getProviderProfile,
-  updateProviderProfile
+  updateProviderProfile,
+  getProviderAvailability,
+  updateProviderAvailability
 };

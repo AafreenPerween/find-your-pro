@@ -39,7 +39,76 @@ const updateCustomerProfile = async (req, res) => {
   }
 };
 
+
+// ✅ Get Provider Profile & Reviews for Customer View
+// ✅ Enhanced: Get Provider Profile, Reviews, Avg Rating & Total Reviews
+const getProviderDetails = async (req, res) => {
+  const providerId = req.params.id;
+
+  try {
+    // Get provider basic info
+    const [providerResult] = await db.query(
+      `SELECT provider_id AS id, name, service_type, 
+              COALESCE(profile_pic, '/uploads/default_profile.png') AS profile_pic
+       FROM providers 
+       WHERE provider_id = ?`,
+      [providerId]
+    );
+
+    if (!providerResult || providerResult.length === 0) {
+      return res.status(404).json({ success: false, message: "Provider not found" });
+    }
+
+    const provider = providerResult[0];
+
+    // Get reviews with customer names
+    const [reviews] = await db.query(
+      `SELECT c.name AS customerName, r.rating, r.comment
+       FROM reviews r
+       JOIN customers c ON r.customer_id = c.customer_id
+       WHERE r.provider_id = ?`,
+      [providerId]
+    );
+
+    // Calculate average rating and total reviews
+    const totalReviews = reviews.length;
+    const averageRating = totalReviews > 0
+      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1)
+      : null;
+
+    // Attach additional info to response
+    provider.reviews = reviews;
+    provider.totalReviews = totalReviews;
+    provider.averageRating = averageRating;
+
+    res.json({ success: true, provider });
+  } catch (error) {
+    console.error("Error fetching provider details:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+const createBookingRequest = async (req, res) => {
+  const customerId = req.customer.customer_id;
+  const { provider_id, preferred_date, preferred_time, notes } = req.body;
+
+  if (!provider_id || !preferred_date || !preferred_time) {
+    return res.status(400).json({ success: false, message: "Missing booking fields" });
+  }
+
+  await db.query(
+    `INSERT INTO booking_requests (customer_id, provider_id, preferred_date, preferred_time, notes, status)
+     VALUES (?, ?, ?, ?, ?, 'pending')`,
+    [customerId, provider_id, preferred_date, preferred_time, notes || ""]
+  );
+
+  res.json({ success: true, message: "Booking request submitted" });
+};
+
+
 module.exports = {
   getCustomerProfile,
-  updateCustomerProfile
+  updateCustomerProfile,
+  getProviderDetails,
+  createBookingRequest
 };
