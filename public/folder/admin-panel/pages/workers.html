@@ -46,7 +46,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-user-cog"></i>
-              <p>Manage Providers</p>
+              <p id="dashboardTitle">Manage Providers</p>
             </a>
           </li>
           <li class="nav-item">
@@ -91,7 +91,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Manage Providers</h1>
+            <h1 class="m-0"  id="dashboardTitle">Manage Providers</h1>
           </div>
         </div>
       </div>
@@ -264,6 +264,29 @@
             });
         }
     });
+
+
+
+
+
+    document.addEventListener("DOMContentLoaded", async function () {
+    const savedLang = localStorage.getItem("selectedLang") || "en";
+    document.getElementById("languageSwitcher").value = savedLang;
+
+    const elementsToTranslate = [
+        { id: "dashboardTitle", text: "Dashboard" },
+        { id: "manageProviders", text: "Manage Providers" },
+        { id: "manageCustomers", text: "Manage Customers" },
+        { id: "serviceRequests", text: "Service Requests" },
+        { id: "settingsPage", text: "Settings" },
+        { id: "logout", text: "Logout" }
+    ];
+
+    elementsToTranslate.forEach(async (item) => {
+        const translatedText = await translateText(item.text, savedLang);
+        document.getElementById(item.id).innerHTML = translatedText;
+    });
+});
 </script>
 </body>
 </html>

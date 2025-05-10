@@ -47,7 +47,248 @@
       .sidebar-link {
         cursor: pointer;
       }
-    </style>
+
+
+        
+
+
+
+
+
+   
+/* Settings Box */
+.settings-container {
+  
+   
+    max-width: 100%;
+    background: white; /* Bright contrast */
+    padding: 20px;
+    margin: 30%;
+    margin-top: 3%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+       
+}
+/* Headings */
+h1 {
+    text-align: center;
+    color: #0077b6; /* Sea Blue */
+    margin-bottom: 20px;
+}
+
+/* Labels & Inputs */
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #102e50; /* Stylish deep blue */
+}
+
+select, input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+}
+
+/* Button - Sea Blue */
+.clsbttn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #0077b6; /* Sea Blue */
+    color: white;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #005e94; /* Slightly darker hover effect */
+}
+
+
+
+
+
+
+.dark-mode {
+    background-color: #102e50;
+    color: white;
+}
+
+/* Input Fields in Dark Mode */
+.dark-mode select,
+.dark-mode input {
+    background-color: #1c3b5d;
+    color: white;
+    border: 1px solid #004080;
+}
+
+/* Button */
+button {
+    background-color: #0077b6;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #005e94;
+}
+
+
+
+
+.dark-mode {
+    background-color: #0b1e38 !important; /* Darker navy blue */
+    color: white !important;
+}
+
+/* Apply Dark Mode to all containers */
+.dark-mode .settings-container,
+.dark-mode .offcanvas,
+.dark-mode .navbar,
+.dark-mode main {
+    background-color: #08152a !important; /* Even darker for better contrast */
+    border: 1px solid #004080 !important;
+}
+
+/* Improve Text Visibility */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode p,
+.dark-mode label {
+    color: white !important;
+}
+
+/* Input Fields in Dark Mode */
+.dark-mode select,
+.dark-mode input {
+    background-color: #112443;
+    color: white;
+    border: 1px solid #004080;
+}
+
+/* Provider Cards (Explore Page) */
+.dark-mode #providerList .card {
+    background-color: #112443 !important;
+    color: white !important;
+    border: 1px solid #004080 !important;
+}
+
+/* Buttons */
+.dark-mode button {
+    background-color: #fcbf49 !important;
+    color: #102e50 !important;
+}
+
+.dark-mode button:hover {
+    background-color: #e09f3e !important;
+}
+
+
+
+.dark-mode {
+    background-color: #2e3a4a !important; /* Soft gray with a subtle blue tone */
+    color: #ffffff !important; /* Bright white text for perfect contrast */
+}
+
+/* Navbar & Sidebar */
+.dark-mode .navbar,
+.dark-mode .offcanvas {
+    background-color: #37475b !important; /* Slightly lighter for distinction */
+    border-bottom: 2px solid #5a718e !important;
+}
+
+/* Sidebar Links */
+.dark-mode .sidebar-link {
+    color: #ffffff !important;
+}
+
+.dark-mode .sidebar-link:hover {
+    background-color: #465b77 !important; /* Gentle hover effect */
+}
+
+/* Cards & Containers */
+.dark-mode .card,
+.dark-mode .settings-container {
+    background-color: #3f4f63 !important; /* Balanced gray-blue */
+    border: 1px solid #5a718e !important;
+}
+
+/* Provider Cards (Explore Page) */
+.dark-mode #providerList .card {
+    background-color: #3f4f63 !important;
+    color: white !important;
+    border: 1px solid #5a718e !important;
+}
+
+/* Input Fields */
+.dark-mode .form-control,
+.dark-mode select,
+.dark-mode input {
+    background-color: #4a5c72 !important;
+    color: #ffffff;
+    border: 1px solid #6c85a1;
+}
+
+/* Booking Requests & Availability Tables */
+.dark-mode table.table-bordered {
+    background-color: #3f4f63 !important;
+    color: #ffffff !important;
+    border: 1px solid #5a718e !important;
+}
+
+.dark-mode table.table-bordered th {
+    background-color: #4a5c72 !important;
+    color: #ffffff !important;
+}
+
+/* Alerts & Notifications */
+.dark-mode .alert {
+    background-color: #3f4f63 !important;
+    color: #ffffff !important;
+    border: 1px solid #5a718e !important;
+}
+
+/* Buttons */
+.dark-mode button {
+    background-color: #4c88ff !important; /* Clean, modern blue */
+    color: white !important;
+    transition: 0.3s ease-in-out;
+}
+
+.dark-mode button:hover {
+    background-color: #3570e5 !important; /* Slightly darker on hover */
+}
+
+
+
+.dark-mode ::placeholder {
+    color: white !important;
+    opacity: 1; /* Ensure full visibility */
+}
+
+/* Improve input contrast */
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+    background-color: #4a5c72 !important;
+    color: white !important;
+    border: 1px solid #6c85a1 !important;
+}
+
+  </style>
   </head>
   <body>
     <!-- Navbar -->
@@ -159,8 +400,37 @@
       </form>`,
 
         settings: `
-      <h2>Account Settings</h2>
-      <p>Manage your account preferences and security settings.</p>`,
+      <div class="settings-container" class="bodyclssttng" id="rootContainer">
+    <h1>Settings</h1>
+
+    <form id="settingsForm">
+        <label for="profileName">Full Name</label>
+        <input type="text" id="profileName" placeholder="Enter your name">
+
+        <div class="theme-switcher">
+        
+           <label for="profileName">theme</label>
+    <button id="themeToggle">
+        <span id="themeIcon">🌞</span> <span id="themeText">Light Mode</span>
+    </button>
+</div>
+
+        <label for="notificationToggle">Enable Notifications</label>
+        <select id="notificationToggle">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="languageSwitcher">Preferred Language</label>
+        <select id="languageSwitcher">
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="or">Odia</option>
+        </select>
+
+        <button type="submit" class="clsbttn">Save Settings</button>
+    </form>
+</div>`,
 
         help: `
       <h2>Help & Support</h2>
@@ -405,5 +675,91 @@
         }
       });
     </script>
+<script>
+    // Function to wait for an element before running logic
+    function waitForElement(selector, callback) {
+        const element = document.querySelector(selector);
+        if (element) {
+            callback(element);
+        } else {
+            setTimeout(() => waitForElement(selector, callback), 100); // Retry every 100ms
+        }
+    }
+
+    // Apply the theme (Dark or Light)
+    function applyTheme(theme) {
+        document.documentElement.classList.toggle("dark-mode", theme === "dark");
+        localStorage.setItem("theme", theme);
+        
+        const themeIcon = document.getElementById("themeIcon");
+        const themeText = document.getElementById("themeText");
+        
+        if (themeIcon && themeText) {
+            themeIcon.textContent = theme === "dark" ? "🌙" : "🌞";
+            themeText.textContent = theme === "dark" ? "Dark Mode" : "Light Mode";
+        }
+    }
+
+   document.addEventListener("DOMContentLoaded", function () {
+    const savedTheme = localStorage.getItem("theme") || "light";
+
+    function applyTheme(theme) {
+        document.documentElement.classList.toggle("dark-mode", theme === "dark");
+        localStorage.setItem("theme", theme);
+
+        const themeIcon = document.getElementById("themeIcon");
+        const themeText = document.getElementById("themeText");
+
+        if (themeIcon && themeText) {
+            themeIcon.textContent = theme === "dark" ? "🌙" : "🌞";
+            themeText.textContent = theme === "dark" ? "Dark Mode" : "Light Mode";
+        }
+    }
+
+    applyTheme(savedTheme); // Apply theme immediately
+
+    function attachToggleListener() {
+        waitForElement("#themeToggle", function(themeToggle) {
+            themeToggle.removeEventListener("click", toggleTheme); // Ensure we don’t duplicate events
+            themeToggle.addEventListener("click", toggleTheme);
+        });
+    }
+
+    function toggleTheme() {
+        const newTheme = document.documentElement.classList.contains("dark-mode") ? "light" : "dark";
+        applyTheme(newTheme);
+    }
+
+    // ✅ Reattach Toggle Listener Every Time Settings Page Loads
+    document.querySelectorAll(".sidebar-link").forEach((link) => {
+        link.addEventListener("click", function () {
+            setTimeout(() => {
+                applyTheme(localStorage.getItem("theme") || "light");
+                attachToggleListener(); // Ensure toggle button remains functional
+            }, 200);
+        });
+    });
+
+    // ✅ Keep reattaching the event listener whenever content updates dynamically
+    const observer = new MutationObserver(() => {
+        attachToggleListener(); // Ensure toggle works even after switching pages
+    });
+
+    observer.observe(document.getElementById("main-content"), { childList: true, subtree: true });
+});  
+
+// Ensure theme is applied when switching pages dynamically
+    function applyThemeOnPageSwitch() {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        applyTheme(savedTheme);
+    }
+
+    // Update theme when switching between pages dynamically
+    document.querySelectorAll(".sidebar-link").forEach((link) => {
+        link.addEventListener("click", function () {
+            setTimeout(applyThemeOnPageSwitch, 200); // Apply theme after page update
+        });
+    });
+</script>
   </body>
 </html>

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Find You Pro | Admin Panel</title>
+    <title id="cspagetittle">Find You Pro | Admin Panel</title>
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css" />
     <link rel="stylesheet" href="dist/css/adminlte.min.css" />
     <link rel="stylesheet" href="/styledarkmode.css" />
@@ -63,7 +63,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="#" class="brand-link">
       <img src="dist/img/AdminLTELogo.png" alt="Logo" class="brand-image img-circle elevation-3" />
-      <span class="brand-text font-weight-light">Find You Pro</span>
+      <span class="brand-text font-weight-light"  >Find You Pro</span>
     </a>
     <div class="sidebar">
       <nav class="mt-2">
@@ -210,7 +210,7 @@
 <script src="plugins/jquery/jquery.min.js"></script>
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="dist/js/adminlte.min.js"></script>
-
+<script src="./pages/language-switcher.js" defer></script>
 <script>
   const token = localStorage.getItem("adminToken");
   const tableBody = document.getElementById("requestTableBody");
@@ -311,6 +311,66 @@
   };
 
   document.addEventListener("DOMContentLoaded", fetchServiceRequests);
+</script>
+
+<script>
+  async function translateText(text, targetLang) {
+    const apiKey = "AIzaSyDkiFJ60SAb3Y3YOg3eQHxLUgh4VRMJ24M"; // Replace with your key
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({ q: text, target: targetLang }),
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await response.json();
+        return data.data.translations[0]?.translatedText || text;
+    } catch (error) {
+        console.error("Translation failed:", error);
+        return text;
+    }
+  }
+
+  document.getElementById("languageSwitcher").addEventListener("change", async function () {
+    const selectedLang = this.value;
+    localStorage.setItem("selectedLang", selectedLang);
+
+   const elementsToTranslate = [
+    { id: "title", text: "Find Your Pro" },
+    { id: "description", text: "Your trusted experts for every job - from fixing to flourishing. We have got you covered." },
+    { id: "standout-heading", text: "What Makes Us Stand Out" },
+    { id: "standout-description", text: "A combination of technology, trust, and top-tier service to redefine how you connect with local professionals." },
+    { id: "easy-to-use", text: "Easy to use" },
+    { id: "easy-to-use-desc", text: "Simple, user-friendly and reliable interface for users." },
+    { id: "excellent-service", text: "Excellent service" },
+    { id: "excellent-service-desc", text: "Professionals equipped with the right tools, knowledge, and attitude to deliver outstanding results." }
+];
+
+    elementsToTranslate.forEach(async (item) => {
+        const translatedText = await translateText(item.text, selectedLang);
+        document.getElementById(item.id).innerHTML = translatedText;
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    const savedLang = localStorage.getItem("selectedLang") || "en";
+    document.getElementById("languageSwitcher").value = savedLang;
+
+    const elementsToTranslate = [
+        { id: "title", text: "Find Your Pro" },
+        { id: "description", text: "Your trusted experts for every job - from fixing to flourishing. We have got you covered." }
+    ];
+
+    elementsToTranslate.forEach(async (item) => {
+        const translatedText = await translateText(item.text, savedLang);
+        document.getElementById(item.id).innerHTML = translatedText;
+    });
+  });
+
+
+  
 </script>
   </body>
 </html>

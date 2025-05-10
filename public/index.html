@@ -3,12 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Find Your Pro</title>
+    <title id="title">Find Your Pro</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="/style.css" />
+    <style>.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.styled-dropdown {
+    width: 120px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 30px; /* Rounded modern look */
+    border: 2px solid #007bff; /* Smooth blue gradient */
+    background: linear-gradient(to right, #285a8f, #50afc9); /* Gradient effect */
+    color: black;
+    cursor: pointer;
+    appearance: none; /* Hides default dropdown arrow */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Add hover & focus effects */
+.styled-dropdown:hover,
+.styled-dropdown:focus {
+    background: linear-gradient(to right, #314d6b, #035e7c);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Custom dropdown arrow */
+.dropdown-container::after {
+    content: "▼";
+    font-size: 16px;
+    color: black;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+
+
+</style>
   </head>
   <body>
     <!-- Navbar -->
@@ -21,9 +62,9 @@
     <img src="./folder/images/animation.gif" class="small-img2" />
     <div class="small-animation2"></div>
 
-    <div class="hero-section after-hero-section fade-in">
+    <div  class="hero-section after-hero-section fade-in">
       <div class="title fade-in">
-        <h1>Find Your <span class="pro">Pro</span></h1>
+        <h1 id="title">Find Your <span class="pro">Pro</span></h1>
         <img
           src="./folder/images/nut-removebg-preview.png"
           class="animated-img"
@@ -43,9 +84,9 @@
       <div
         class="row row-cols-1 row-cols-md-2 align-items-md-center g-5 py-5 mx-0"
       >
-        <div class="col d-flex flex-column align-items-start gap-4 p-5">
-          <h2 class="fw-bold text-body-emphasis">What Makes Us Stand Out</h2>
-          <p class="text-body-secondary">
+        <div  class="col d-flex flex-column align-items-start gap-4 p-5">
+          <h2  id="standout-heading" class="fw-bold text-body-emphasis">What Makes Us Stand Out</h2>
+          <p class="text-body-secondary" id="standout-description">
             A combinaton of technology, trust, and top-tier service to redefine
             how you connect with local professionals. From user-friendly
             interfaces to reliable service, every feature is designed to make
@@ -75,8 +116,8 @@
                   />
                 </svg>
               </div>
-              <h4 class="fw-semibold mb-0 text-body-emphasis">Easy to use</h4>
-              <p class="text-body-secondary">
+              <h4 class="fw-semibold mb-0 text-body-emphasis" id="excellent-service">Easy to use</h4>
+              <p class="text-body-secondary" id="easy-to-use-desc">
                 Simple, user-friendly and reliable interface for users.
               </p>
             </div>
@@ -97,10 +138,10 @@
                   />
                 </svg>
               </div>
-              <h4 class="fw-semibold mb-0 text-body-emphasis">
+              <h4 class="fw-semibold mb-0 text-body-emphasis" id="excellent-service">
                 Excellent service
               </h4>
-              <p class="text-body-secondary">
+              <p class="text-body-secondary" id="excellent-service-desc">
                 Professionals equipped with the right tools, knowledge, and
                 attitude to deliver outstanding results.
               </p>
@@ -128,10 +169,10 @@
                   />
                 </svg>
               </div>
-              <h4 class="fw-semibold mb-0 text-body-emphasis">
+              <h4 class="fw-semibold mb-0 text-body-emphasis" id="excellent-service">
                 Flexible timings
               </h4>
-              <p class="text-body-secondary">
+              <p class="text-body-secondary" id="excellent-service-desc">
                 Every hour is service hour — convenience without compromise.
               </p>
             </div>
@@ -158,7 +199,7 @@
               <h4 class="fw-semibold mb-0 text-body-emphasis">
                 Customer support
               </h4>
-              <p class="text-body-secondary">
+              <p class="text-body-secondary" id="excellent-service-desc">
                 24/7 Customer support team ready to guide, solve, and support.
               </p>
             </div>
@@ -301,12 +342,116 @@
       </div>
     </div>
     <!-- Footer -->
-    <footer class="text-white text-center py-3">
-      <p>&copy; 2025 Find Your Pro | All Rights Reserved</p>
-      <a href="./folder/admin-panel/login.html" class="text-white me-3">Admin</a>
-    </footer>
+   <footer class="footer-container">
+    <div class="footer-branding">
+        <h2 class="company-name">Find Your Pro</h2>
+        <p class="company-slogan">Your trusted experts for every job – from fixing to flourishing.</p>
+    </div>
+
+    <div class="footer-content">
+        <div class="footer-section links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="./folder/about.html">About</a></li>
+                <li><a href="./folder/services.html">Services</a></li>
+                <li><a href="./faqpage.html">FAQ</a></li>
+                <li><a href="./folder/contact.html">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section admin">
+            <h3>Admin Access</h3>
+            <a href="./folder/admin-panel/login.html"   class="acls">Admin Panel</a>
+        </div>
+
+        <div class="footer-section social">
+            <h3>Follow Us</h3>
+            <div class="social-icons">
+                <a href="#"><img src="./folder/images/Facebook.png" alt="facebook" height="30px"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-section language">
+            <h3>Choose Language</h3>
+            <div class="dropdown-container">
+                <select id="languageSwitcher" class="styled-dropdown">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="hi">🇮🇳 Hindi</option>
+                    <option value="or">🌏 Odia</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2025 Find Your Pro | All Rights Reserved | <a href="./privecypolicy.html">Privacy Policy</a> | <a href="./terms&conditions.html">Terms & Conditions</a></p>
+    </div>
+</footer>
 
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    
+  <script>
+  async function translateText(text, targetLang) {
+    const apiKey = "AIzaSyDkiFJ60SAb3Y3YOg3eQHxLUgh4VRMJ24M"; // Replace with your key
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({ q: text, target: targetLang }),
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await response.json();
+        return data.data.translations[0]?.translatedText || text;
+    } catch (error) {
+        console.error("Translation failed:", error);
+        return text;
+    }
+  }
+
+  document.getElementById("languageSwitcher").addEventListener("change", async function () {
+    const selectedLang = this.value;
+    localStorage.setItem("selectedLang", selectedLang);
+
+   const elementsToTranslate = [
+    { id: "title", text: "Find Your Pro" },
+    { id: "description", text: "Your trusted experts for every job - from fixing to flourishing. We have got you covered." },
+    { id: "standout-heading", text: "What Makes Us Stand Out" },
+    { id: "standout-description", text: "A combination of technology, trust, and top-tier service to redefine how you connect with local professionals." },
+    { id: "easy-to-use", text: "Easy to use" },
+    { id: "easy-to-use-desc", text: "Simple, user-friendly and reliable interface for users." },
+    { id: "excellent-service", text: "Excellent service" },
+    { id: "excellent-service-desc", text: "Professionals equipped with the right tools, knowledge, and attitude to deliver outstanding results." }
+];
+
+    elementsToTranslate.forEach(async (item) => {
+        const translatedText = await translateText(item.text, selectedLang);
+        document.getElementById(item.id).innerHTML = translatedText;
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    const savedLang = localStorage.getItem("selectedLang") || "en";
+    document.getElementById("languageSwitcher").value = savedLang;
+
+    const elementsToTranslate = [
+        { id: "title", text: "Find Your Pro" },
+        { id: "description", text: "Your trusted experts for every job - from fixing to flourishing. We have got you covered." }
+    ];
+
+    elementsToTranslate.forEach(async (item) => {
+        const translatedText = await translateText(item.text, savedLang);
+        document.getElementById(item.id).innerHTML = translatedText;
+    });
+  });
+</script>
+
+
   </body>
 </html>   
