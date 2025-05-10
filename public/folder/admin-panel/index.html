@@ -7,11 +7,41 @@
     <title>Find You Pro | Admin Panel</title>
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css" />
     <link rel="stylesheet" href="dist/css/adminlte.min.css" />
+    <link rel="stylesheet" href="/styledarkmode.css" />
+    <style>.status-badge {
+    width: 100px;
+    display: inline-block;
+    padding: 3px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.pending {
+    background-color: #FFC107; /* Yellow */
+    color: black;
+}
+
+.accepted {
+    background-color: #28A745; /* Green */
+    color: white;
+}
+
+.rejected {
+    background-color: #DC3545; /* Red */
+    color: white;
+}
+
+.completed {
+    background-color: #007BFF; /* Blue */
+    color: white;
+}
+</style>
   </head>
   <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
-```
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <ul class="navbar-nav">
@@ -47,7 +77,7 @@
           <li class="nav-item">
             <a href="../admin-panel/pages/workers.html" class="nav-link">
               <i class="nav-icon fas fa-user-cog"></i>
-              <p>Manage Workers</p>
+              <p>Manage Providers</p>
             </a>
           </li>
           <li class="nav-item">
@@ -106,7 +136,7 @@
             <div class="small-box bg-info">
               <div class="inner">
                 <h3 id="workerCount">--</h3>
-                <p>Total Workers</p>
+                <p>Total Providers</p>
               </div>
               <div class="icon"><i class="fas fa-user-cog"></i></div>
             </div>
@@ -154,7 +184,7 @@
                 <tr>
                   <th>ID</th>
                   <th>Customer</th>
-                  <th>Worker</th>
+                  <th>Provider</th>
                   <th>Status</th>
                   <th>Date</th>
                 </tr>
@@ -229,7 +259,58 @@
       });
   }
 </script>
-```
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.body.classList.toggle("dark-mode", savedTheme === "dark");
 
+        const themeDropdown = document.getElementById("themeMode");
+        if (themeDropdown) {
+            themeDropdown.value = savedTheme;
+            themeDropdown.addEventListener("change", function () {
+                const selectedTheme = this.value;
+                document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+                localStorage.setItem("theme", selectedTheme);
+            });
+        }
+    });
+</script>
+
+// Search functionality
+<script>
+  const fetchServiceRequests = async () => {
+      try {
+          const res = await fetch("/api/admin/dashboard-data", {
+              headers: { Authorization: "Bearer " + localStorage.getItem("adminToken") },
+          });
+          if (!res.ok) throw new Error("Failed to fetch requests");
+
+          const data = await res.json();
+          const tableBody = document.getElementById("requestTableBody");
+          tableBody.innerHTML = ""; // Clear previous entries
+
+          data.recentRequests.forEach((r) => {
+              const statusClass = r.status.toLowerCase() === "pending" ? "pending"
+                  : r.status.toLowerCase() === "accepted" ? "accepted"
+                  : r.status.toLowerCase() === "rejected" ? "rejected"
+                  : "completed"; // Added completed status
+
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                  <td>${r.id}</td>
+                  <td>${r.customer}</td>
+                  <td>${r.worker}</td>
+                  <td><span class="status-badge ${statusClass}">${r.status}</span></td>
+                  <td>${r.date}</td>
+              `;
+              tableBody.appendChild(row);
+          });
+      } catch (err) {
+          console.error("Error fetching service requests:", err);
+      }
+  };
+
+  document.addEventListener("DOMContentLoaded", fetchServiceRequests);
+</script>
   </body>
 </html>

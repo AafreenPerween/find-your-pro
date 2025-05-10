@@ -21,7 +21,8 @@
     <a href="/folder/admin-panel/index.html" class="brand-link">
       <img src="../dist/img/AdminLTELogo.png" alt="Logo" class="brand-image img-circle elevation-3">
       <span class="brand-text font-weight-light">Find You Pro</span>
-    </a>
+    </a>  
+    
     <div class="sidebar">
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column">
@@ -34,7 +35,7 @@
               <li class="nav-item">
                 <a href="./workers.html" class="nav-link">
                   <i class="nav-icon fas fa-user-cog"></i>
-                  <p>Manage Workers</p>
+                  <p>Manage Providers</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -128,6 +129,25 @@
   document.getElementById('settingsForm').addEventListener('submit', function(e) {
     e.preventDefault();
     alert('Settings saved (connect to backend logic if needed).');
+  });
+</script>
+
+<script>
+  document.getElementById("themeMode").addEventListener("change", function () {
+      const selectedTheme = this.value;
+      document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+      localStorage.setItem("theme", selectedTheme); 
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.getElementById("themeMode").value = savedTheme;
+      document.body.classList.toggle("dark-mode", savedTheme === "dark");
+  });
+
+  document.getElementById("settingsForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Settings saved! (Theme preference stored)");
   });
 </script>
 </body>

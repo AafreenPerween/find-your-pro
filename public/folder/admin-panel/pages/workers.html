@@ -6,6 +6,15 @@
   <title>Manage Providers | Find You Pro</title>
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+  <style>
+ #searchProviderBar, #dateSearch, #jobDropdown {
+    width: 140px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+</style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -37,7 +46,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-user-cog"></i>
-              <p>Manage Workers</p>
+              <p>Manage Providers</p>
             </a>
           </li>
           <li class="nav-item">
@@ -87,6 +96,24 @@
         </div>
       </div>
     </div>
+
+ <div class="card-header d-flex justify-content-between align-items-center">
+    <h3 class="card-title">Provider List</h3>
+    <div class="d-flex gap-2">
+        <input type="text" id="searchProviderBar" class="form-control" placeholder="🔍 Search by name">
+        <input type="date" id="dateSearch" class="form-control">
+        <select id="jobDropdown" class="form-select">
+            <option value="">Select Job</option>
+            <option value="Electrician">Electrician</option>
+            <option value="Carpenter">Carpenter</option>
+            <option value="Painter">Painter</option>
+            <option value="Technician">Technician</option>
+            <option value="Plumber">Plumber</option>
+        </select>
+    </div>
+</div>
+
+
 
     <section class="content">
       <div class="container-fluid">
@@ -157,6 +184,86 @@
     document.addEventListener("DOMContentLoaded", () => {
       fetchProviders();
     });
+
+//searbar and filter
+    
+    
+  
+    async function fetchProviders() {
+        const spinner = document.getElementById("loadingSpinner");
+        if (spinner) spinner.style.display = "block"; 
+
+        try {
+            const res = await fetch('http://localhost:5000/api/admin/providers');
+            const response = await res.json();
+            if (!response.success) throw new Error(response.message);
+
+            const providers = response.data;
+            const table = document.getElementById('providerTableBody');
+            table.innerHTML = '';
+
+            providers.forEach(p => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${p.provider_id}</td>
+                        <td>${p.name}</td>
+                        <td>${p.service_type}</td>
+                        <td>${p.phone}</td>
+                        <td>${p.address}</td>
+                        <td hidden>${p.created_at}</td>
+                    </tr>`;
+            });
+        } catch (err) {
+            console.error("Error fetching providers:", err);
+        }
+
+        if (spinner) spinner.style.display = "none";
+    }
+
+    function filterProviderTable() {
+        const searchQuery = document.getElementById("searchProviderBar").value.toLowerCase();
+        const selectedDate = document.getElementById("dateSearch").value;
+        const selectedJob = document.getElementById("jobDropdown").value.toLowerCase();
+        const rows = document.querySelectorAll("#providerTableBody tr");
+
+        rows.forEach(row => {
+            const name = row.cells[1].innerText.toLowerCase();
+            const profession = row.cells[2].innerText.toLowerCase();
+            const registeredDate = row.cells[5].innerText.slice(0, 10);
+
+            const matchesSearch = name.includes(searchQuery);
+            const matchesDate = !selectedDate || registeredDate === selectedDate;
+            const matchesJob = !selectedJob || profession === selectedJob;
+
+            row.style.display = matchesSearch && matchesDate && matchesJob ? "" : "none";
+        });
+    }
+
+    document.getElementById("searchProviderBar").addEventListener("keyup", filterProviderTable);
+    document.getElementById("dateSearch").addEventListener("change", filterProviderTable);
+    document.getElementById("jobDropdown").addEventListener("change", filterProviderTable);
+
+    document.addEventListener("DOMContentLoaded", fetchProviders);
+
+   
+
   </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.body.classList.toggle("dark-mode", savedTheme === "dark");
+
+        const themeDropdown = document.getElementById("themeMode");
+        if (themeDropdown) {
+            themeDropdown.value = savedTheme;
+            themeDropdown.addEventListener("change", function () {
+                const selectedTheme = this.value;
+                document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+                localStorage.setItem("theme", selectedTheme);
+            });
+        }
+    });
+</script>
 </body>
 </html>

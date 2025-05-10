@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const jwt = require('jsonwebtoken');
+// const sendSMSNotification = require("../backend/notifications");
 
 exports.adminLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -100,7 +101,7 @@ exports.getDashboardData = async (req, res) => {
          SELECT
          r.request_id AS id,
          c.name           AS customer,
-         p.name           AS worker,
+         p.name           AS provider,
          r.status,
          r.service_type,
          DATE_FORMAT(r.created_at, '%Y-%m-%d') AS date
@@ -213,3 +214,5 @@ exports.getAllCustomers = async (req, res) => {
     });
   }
 };
+
+
