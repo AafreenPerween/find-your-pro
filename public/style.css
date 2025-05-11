@@ -471,7 +471,7 @@ header {
 }
 
 .about-content ul li {
-    background: #eef5ff;
+    background: #f9fbff;
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
@@ -479,7 +479,7 @@ header {
 
 footer{
     background-color: #17153B;
-    height: 100px;
+    height: 400px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -487,4 +487,96 @@ footer{
     /* margin-top: 60px; */
 }
 
-  
+.footer-container {
+    background: #17153B; /* Darker background for contrast */
+    color: #f1f1f1; /* Brighter text */
+    padding: 50px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+/* Brand Styling */
+.footer-branding {
+    margin-bottom: 20px;
+}
+
+.company-name {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00c6ff; /* Bright accent */
+    text-transform: uppercase;
+}
+
+.company-slogan {
+    font-size: 16px;
+    color: #e0e0e0; /* Brighter text for readability */
+    font-style: italic;
+}
+
+/* Footer Content */
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin: 15px;
+}
+
+.footer-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #00c6ff;
+}
+
+.footer-section ul li a {
+    color: #dcdcdc; /* Improved contrast */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #00c6ff;
+}
+
+/* Social Icons */
+.social-icons a {
+    color: #ffffff; /* Brighter for better visibility */
+    font-size: 22px;
+    margin: 5px;
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
+}
+
+.social-icons a:hover {
+    transform: scale(1.1);
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    width: 102.5%;
+    text-align: center;
+    padding:  15px  0px;
+    background: #0d0d0d; /* Darker for contrast */
+    font-size: 14px;
+}
+
+
+
+.acls{
+    color: white !important; /* Forces white text */
+    text-decoration: none; /* Removes underline */
+    transition: color 0.3s ease;
+}
+
+.acls:hover {
+    color: #00c6ff !important; /* Bright color on hover */
+}

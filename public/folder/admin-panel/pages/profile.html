@@ -92,5 +92,22 @@
     alert('Profile updated (hook to backend logic here).');
   });
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.body.classList.toggle("dark-mode", savedTheme === "dark");
+
+        const themeDropdown = document.getElementById("themeMode");
+        if (themeDropdown) {
+            themeDropdown.value = savedTheme;
+            themeDropdown.addEventListener("change", function () {
+                const selectedTheme = this.value;
+                document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+                localStorage.setItem("theme", selectedTheme);
+            });
+        }
+    });
+</script>
 </body>
 </html>

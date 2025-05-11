@@ -9,6 +9,46 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="../style.css" />
+    <style>.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.styled-dropdown {
+    width: 120px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 30px; /* Rounded modern look */
+    border: 2px solid #007bff; /* Smooth blue gradient */
+    background: linear-gradient(to right, #285a8f, #50afc9); /* Gradient effect */
+    color: black;
+    cursor: pointer;
+    appearance: none; /* Hides default dropdown arrow */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Add hover & focus effects */
+.styled-dropdown:hover,
+.styled-dropdown:focus {
+    background: linear-gradient(to right, #314d6b, #035e7c);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Custom dropdown arrow */
+.dropdown-container::after {
+    content: "▼";
+    font-size: 16px;
+    color: black;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+</style>
+
   </head>
   <body class="allmainpagebg">
     <!-- Navbar -->
@@ -16,86 +56,122 @@
     <script src="navbar.js"></script>
 
     <!-- Services Section -->
-    <div class="container mt-4 py-20px fade-in">
-      <h2 class="text-center text-white">Our Services</h2>
-      <div class="row">
+    
+   <div class="container mt-4 py-20px fade-in">
+    <h2 class="text-center text-white">Our Services</h2>
+    <div class="row">
         <div class="col-md-4">
-          <div class="card service-card" onclick="checkLogin('electrical')">
-            <img
-              src="./images/electrician.jpg"
-              class="card-img-top"
-              alt="Electrical"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Electrical</h5>
-              <p class="card-text">
-                Find experienced electricians for your needs.
-              </p>
-            </div>
-          </div>
+            <a href="./customer-signup.html" class="text-decoration-none">
+                <div class="card service-card">
+                    <img src="./images/electrician.jpg" class="card-img-top" alt="Electrical"/>
+                    <div class="card-body">
+                        <h5 class="card-title">Electrical</h5>
+                        <p class="card-text">Find experienced electricians for your needs.</p>
+                    </div>
+                </div>
+            </a>
         </div>
 
         <div class="col-md-4">
-          <div class="card service-card" onclick="checkLogin('plumber')">
-            <img
-              src="./images/plumber.jpg"
-              class="card-img-top"
-              alt="Plumber"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Plumbing</h5>
-              <p class="card-text">
-                Hire professionals to maintain your garden.
-              </p>
-            </div>
-          </div>
+            <a href="./customer-signup.html" class="text-decoration-none">
+                <div class="card service-card">
+                    <img src="./images/plumber.jpg" class="card-img-top" alt="Plumber"/>
+                    <div class="card-body">
+                        <h5 class="card-title">Plumbing</h5>
+                        <p class="card-text">Hire professionals to maintain your garden.</p>
+                    </div>
+                </div>
+            </a>
         </div>
 
         <div class="col-md-4">
-          <div class="card service-card" onclick="checkLogin('painting')">
-            <img
-              src="./images/painter.jpg"
-              class="card-img-top"
-              alt="Painting"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Painting</h5>
-              <p class="card-text">Get expert painters for home and office.</p>
-            </div>
-          </div>
+            <a href="./customer-signup.html" class="text-decoration-none">
+                <div class="card service-card">
+                    <img src="./images/painter.jpg" class="card-img-top" alt="Painting"/>
+                    <div class="card-body">
+                        <h5 class="card-title">Painting</h5>
+                        <p class="card-text">Get expert painters for home and office.</p>
+                    </div>
+                </div>
+            </a>
         </div>
-         
 
         <div class="col-md-4 my-5">
-          <div class="card service-card" onclick="checkLogin('technician')">
-            <img
-              src="./images/technician.jpg"
-              class="card-img-top"
-              alt="Painting"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Technical</h5>
-              <p class="card-text">Get expert painters for home and office.</p>
-            </div>
-          </div>
+            <a href="./customer-signup.html" class="text-decoration-none">
+                <div class="card service-card">
+                    <img src="./images/technician.jpg" class="card-img-top" alt="Technical"/>
+                    <div class="card-body">
+                        <h5 class="card-title">Technical</h5>
+                        <p class="card-text">Find skilled technicians for your needs.</p>
+                    </div>
+                </div>
+            </a>
         </div>
-          
+
         <div class="col-md-4 my-5">
-          <div class="card service-card" onclick="checkLogin('carpenter')">
-            <img
-              src="./images/carpenter.jpg"
-              class="card-img-top"
-              alt="Painting"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Carpentry</h5>
-              <p class="card-text">Get expert painters for home and office.</p>
-            </div>
-          </div>
+            <a href="./customer-signup.html" class="text-decoration-none">
+                <div class="card service-card">
+                    <img src="./images/carpenter.jpg" class="card-img-top" alt="Carpentry"/>
+                    <div class="card-body">
+                        <h5 class="card-title">Carpentry</h5>
+                        <p class="card-text">Get professional carpentry services.</p>
+                    </div>
+                </div>
+            </a>
         </div>
-          
-      </div>
     </div>
+</div>
+
+
+  <!-- Footer -->
+   <footer class="footer-container">
+    <div class="footer-branding">
+        <h2 class="company-name">Find Your Pro</h2>
+        <p class="company-slogan">Your trusted experts for every job – from fixing to flourishing.</p>
+    </div>
+
+    <div class="footer-content">
+        <div class="footer-section links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="./folder/about.html">About</a></li>
+                <li><a href="./folder/services.html">Services</a></li>
+                <li><a href="./faqpage.html">FAQ</a></li>
+                <li><a href="./folder/contact.html">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section admin">
+            <h3>Admin Access</h3>
+            <a href="./folder/admin-panel/login.html"   class="acls">Admin Panel</a>
+        </div>
+
+        <div class="footer-section social">
+            <h3>Follow Us</h3>
+            <div class="social-icons">
+                <a href="#"><img src="./images/Facebook.png" alt="facebook" height="30px"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><img src="./images/twitter.png" alt="twitter" height="30px"><i class="fab fa-twitter"></i></a>
+                <a href="#"><img src="./images/instagram.png" alt="instagram" height="30px"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-section language">
+            <h3>Choose Language</h3>
+            <div class="dropdown-container">
+                <select id="languageSwitcher" class="styled-dropdown">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="hi">🇮🇳 Hindi</option>
+                    <option value="or">🌏 Odia</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2025 Find Your Pro | All Rights Reserved | <a href="./privecypolicy.html">Privacy Policy</a> | <a href="./terms&conditions.html">Terms & Conditions</a></p>
+    </div>
+</footer>
 
     <script src="../script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

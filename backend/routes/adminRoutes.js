@@ -18,6 +18,7 @@ router.get('/customers', adminController.getAllCustomers);
 
 
 
+
 router.get('/test-admin', (req, res) => {
     db.query('SELECT * FROM admins', (err, results) => {
       if (err) {

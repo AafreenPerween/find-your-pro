@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ | Find Your Pro</title>
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212; /* Dark background */
+            color: white;
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .faq-title {
+            text-align: center;
+            font-size: 32px;
+            color: #00c6ff; /* Highlight color */
+            margin-bottom: 20px;
+        }
+
+        .faq {
+            background: #232323;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .faq:hover {
+            background: #343434;
+        }
+
+        .faq h3 {
+            font-size: 18px;
+            color: #00c6ff;
+        }
+
+        .faq p {
+            display: none;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .faq.open p {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="faq-container">
+    <h1 class="faq-title">Frequently Asked Questions</h1>
+
+    <div class="faq">
+        <h3>🔹 What is Find Your Pro?</h3>
+        <p>Find Your Pro connects users with highly skilled professionals for various services, ensuring convenience and trust.</p>
+    </div>
+
+    <div class="faq">
+        <h3>🔹 How do I book a service?</h3>
+        <p>Simply browse the available professionals, select a service, and schedule an appointment through our platform.</p>
+    </div>
+
+    <div class="faq">
+        <h3>🔹 Is there a guarantee on services?</h3>
+        <p>Yes! Our professionals are vetted, and we provide a satisfaction guarantee to ensure you receive quality service.</p>
+    </div>
+
+    <div class="faq">
+        <h3>🔹 How can I contact support?</h3>
+        <p>You can reach out via email at <a href="mailto:support@findyourpro.com">support@findyourpro.com</a> or call +91 98765 43210.</p>
+    </div>
+
+    <div class="faq">
+        <h3>🔹 Can I become a provider?</h3>
+        <p>Yes! If you're a skilled professional, you can apply through the **provider registration page**.</p>
+    </div>
+
+</div>
+
+<script>
+    document.querySelectorAll('.faq').forEach(faq => {
+        faq.addEventListener('click', () => {
+            faq.classList.toggle('open');
+        });
+    });
+</script>
+
+</body>
+</html>

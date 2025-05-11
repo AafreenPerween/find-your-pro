@@ -6,6 +6,14 @@
   <title>Manage Customers | Find You Pro</title>
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+<style> #searchCustomerBar, #dateSearchCustomer {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+</style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -36,7 +44,7 @@
           <li class="nav-item">
             <a href="workers.html" class="nav-link">
               <i class="nav-icon fas fa-user-cog"></i>
-              <p>Manage Workers</p>
+              <p>Manage Providers</p>
             </a>
           </li>
           <li class="nav-item">
@@ -87,12 +95,30 @@
       </div>
     </div>
 
+ <div class="card-header d-flex justify-content-between align-items-center">
+    <h3 class="card-title">Customer List</h3>
+    <div class="d-flex gap-2">
+        <input type="text" id="searchCustomerBar" class="form-control" placeholder="🔍 Search by name or email">
+        <input type="date" id="dateSearchCustomer" class="form-control">
+
+        <select id="filterCustomerDropdown" class="form-select">
+            <option value="">All</option>
+            <option value="1">Today</option>
+            <option value="2">Yesterday</option>
+            <option value="10">Last 10 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="60">Last 60 Days</option>
+        </select>
+    </div>
+</div>
     <section class="content">
       <div class="container-fluid">
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Customer List</h3>
           </div>
+
+   
           <div class="card-body table-responsive p-0">
             <table class="table table-hover text-nowrap">
               <thead>
@@ -181,6 +207,61 @@
 
 // Ensure the function runs when the page loads
 document.addEventListener('DOMContentLoaded', fetchCustomers);
+
+
+
+
+    document.getElementById("searchCustomerBar").addEventListener("keyup", function () {
+        let query = this.value.toLowerCase();
+        filterCustomerTable(query, document.getElementById("filterCustomerDropdown").value);
+    });
+
+    document.getElementById("filterCustomerDropdown").addEventListener("change", function () {
+        filterCustomerTable(document.getElementById("searchCustomerBar").value.toLowerCase(), this.value);
+    });
+
+    function filterCustomerTable(searchQuery, filterDays) {
+        const rows = document.querySelectorAll("#customerTableBody tr");
+        const currentTime = new Date();
+        const today = new Date().setHours(0, 0, 0, 0);
+        const yesterday = new Date().setHours(0, 0, 0, 0) - (24 * 60 * 60 * 1000);
+
+        rows.forEach(row => {
+            const name = row.cells[1].innerText.toLowerCase();
+            const email = row.cells[2].innerText.toLowerCase();
+            const registeredDate = new Date(row.cells[4].innerText).setHours(0, 0, 0, 0);
+            const daysDifference = (currentTime - registeredDate) / (1000 * 60 * 60 * 24);
+
+            let matchesFilter = !filterDays || 
+                (filterDays == "1" && registeredDate == today) || 
+                (filterDays == "2" && registeredDate == yesterday) || 
+                daysDifference <= parseInt(filterDays, 10);
+
+            const matchesSearch = name.includes(searchQuery) || email.includes(searchQuery);
+
+            row.style.display = matchesSearch && matchesFilter ? "" : "none";
+        });
+    }
+
+
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.body.classList.toggle("dark-mode", savedTheme === "dark");
+
+        const themeDropdown = document.getElementById("themeMode");
+        if (themeDropdown) {
+            themeDropdown.value = savedTheme;
+            themeDropdown.addEventListener("change", function () {
+                const selectedTheme = this.value;
+                document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+                localStorage.setItem("theme", selectedTheme);
+            });
+        }
+    });
 </script>
 </body>
 </html>

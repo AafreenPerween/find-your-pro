@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings | Find You Pro</title>
+  <title id="pageTitle">Settings | Find You Pro</title>
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
 </head>
@@ -20,54 +20,47 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="/folder/admin-panel/index.html" class="brand-link">
       <img src="../dist/img/AdminLTELogo.png" alt="Logo" class="brand-image img-circle elevation-3">
-      <span class="brand-text font-weight-light">Find You Pro</span>
+      <span class="brand-text font-weight-light" id="brandName">Find You Pro</span>
     </a>
     <div class="sidebar">
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column">
             <li class="nav-item">
-                <a href="/folder/admin-panel/index.html" class="nav-link ">
+                <a href="/folder/admin-panel/index.html" class="nav-link">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
-                  <p>Dashboard</p>
+                  <p id="dashboardTitle">Dashboard</p>
                 </a>
-              </li>
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
                 <a href="./workers.html" class="nav-link">
                   <i class="nav-icon fas fa-user-cog"></i>
-                  <p>Manage Workers</p>
+                  <p id="manageProviders">Manage Providers</p>
                 </a>
-              </li>
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
                 <a href="./customer-admin.html" class="nav-link">
                   <i class="nav-icon fas fa-users"></i>
-                  <p>Manage Customers</p>
+                  <p id="manageCustomers">Manage Customers</p>
                 </a>
-              </li>
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
                 <a href="./service-requests.html" class="nav-link">
                   <i class="nav-icon fas fa-briefcase"></i>
-                  <p>Service Requests</p>
+                  <p id="serviceRequests">Service Requests</p>
                 </a>
-              </li>
-              <!-- <li class="nav-item">
-                <a href="./analytics.html" class="nav-link">
-                  <i class="nav-icon fas fa-chart-line"></i>
-                  <p>Analytics</p>
-                </a>
-              </li> -->
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
                 <a href="#" class="nav-link active">
                   <i class="nav-icon fas fa-cogs"></i>
-                  <p>Settings</p>
+                  <p id="settingsTitle">Settings</p>
                 </a>
-              </li>
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
                 <a href="/index.html" class="nav-link">
                   <i class="nav-icon fas fa-sign-out-alt"></i>
-                  <p>Logout</p>
+                  <p id="logout">Logout</p>
                 </a>
-              </li>
-    
+            </li>
         </ul>
       </nav>
     </div>
@@ -78,7 +71,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Settings</h1>
+            <h1 id="settingsHeader">Settings</h1>
           </div>
         </div>
       </div>
@@ -88,27 +81,35 @@
       <div class="container-fluid">
         <div class="card card-info">
           <div class="card-header">
-            <h3 class="card-title">System Preferences</h3>
+            <h3 id="preferencesTitle" class="card-title">System Preferences</h3>
           </div>
           <form id="settingsForm">
             <div class="card-body">
               <div class="form-group">
-                <label for="themeMode">Theme Mode</label>
+                <label id="themeLabel" for="themeMode">Theme Mode</label>
                 <select class="form-control" id="themeMode">
                   <option value="light">Light</option>
                   <option value="dark">Dark</option>
                 </select>
               </div>
               <div class="form-group">
-                <label for="notificationToggle">Enable Notifications</label>
+                <label id="notificationLabel" for="notificationToggle">Enable Notifications</label>
                 <select class="form-control" id="notificationToggle">
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label id="languageLabel" for="languageSwitcher">Preferred Language</label>
+                <select class="form-control" id="languageSwitcher">
+                  <option value="en">English</option>
+                  <option value="hi">Hindi</option>
+                  <option value="or">Odia</option>
+                </select>
+              </div>
             </div>
             <div class="card-footer">
-              <button type="submit" class="btn btn-info">Save Settings</button>
+              <button type="submit" class="btn btn-info" id="saveBtn">Save Settings</button>
             </div>
           </form>
         </div>
@@ -117,7 +118,7 @@
   </div>
 
   <footer class="main-footer">
-    <strong>&copy; 2025 <a href="#">Find You Pro</a>.</strong> All rights reserved.
+    <strong>&copy; 2025 <a href="#">Find You Pro</a>.</strong> <span id="footerText">All rights reserved.</span>
   </footer>
 </div>
 
@@ -125,10 +126,83 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../dist/js/adminlte.min.js"></script>
 <script>
-  document.getElementById('settingsForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Settings saved (connect to backend logic if needed).');
+async function translateText(text, targetLang) {
+    const apiKey = "AIzaSyDkiFJ60SAb3Y3YOg3eQHxLUgh4VRMJ24M"; // Replace with your actual key
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({ q: text, target: targetLang }),
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await response.json();
+        return data.data.translations[0]?.translatedText || text;
+    } catch (error) {
+        console.error("Translation failed:", error);
+        return text;
+    }
+}
+
+// Function to apply translations to all elements
+async function applyTranslations(language) {
+    const elementsToTranslate = [
+        { id: "pageTitle", text: "Settings | Find You Pro" },
+        { id: "brandName", text: "Find You Pro" },
+        { id: "dashboardTitle", text: "Dashboard" },
+        { id: "manageProviders", text: "Manage Providers" },
+        { id: "manageCustomers", text: "Manage Customers" },
+        { id: "serviceRequests", text: "Service Requests" },
+        { id: "settingsTitle", text: "Settings" },
+        { id: "settingsHeader", text: "Settings" },
+        { id: "preferencesTitle", text: "System Preferences" },
+        { id: "themeLabel", text: "Theme Mode" },
+        { id: "notificationLabel", text: "Enable Notifications" },
+        { id: "languageLabel", text: "Preferred Language" },
+        { id: "saveBtn", text: "Save Settings" },
+        { id: "footerText", text: "All rights reserved." },
+        { id: "cspagetitle", text: "Find You Pro | Admin Panel" }
+    ];
+
+    elementsToTranslate.forEach(async (item) => {
+        const translatedText = await translateText(item.text, language);
+        document.getElementById(item.id).innerHTML = translatedText;
+    });
+}
+
+// Load saved language on page load
+document.addEventListener("DOMContentLoaded", async function () {
+    const savedLang = localStorage.getItem("selectedLang") || "en";
+    document.getElementById("languageSwitcher").value = savedLang;
+    await applyTranslations(savedLang); // Apply translation on page load
+});
+
+// Detect language change & apply translation dynamically
+document.getElementById("languageSwitcher").addEventListener("change", async function () {
+    const selectedLang = this.value;
+    localStorage.setItem("selectedLang", selectedLang); // Save preference globally
+    await applyTranslations(selectedLang);
+});
+
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const themeDropdown = document.getElementById("themeMode");
+
+    // Load stored theme preference
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.body.classList.toggle("dark-mode", savedTheme === "dark");
+    themeDropdown.value = savedTheme;
+
+    // Change theme on selection
+    themeDropdown.addEventListener("change", function () {
+      const selectedTheme = this.value;
+      document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+      localStorage.setItem("theme", selectedTheme);
+    });
   });
+
 </script>
 </body>
 </html>

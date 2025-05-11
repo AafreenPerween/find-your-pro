@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const jwt = require('jsonwebtoken');
+// const sendSMSNotification = require("../backend/notifications");
 
 exports.adminLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -213,3 +214,5 @@ exports.getAllCustomers = async (req, res) => {
     });
   }
 };
+
+
