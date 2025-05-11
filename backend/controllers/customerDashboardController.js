@@ -67,9 +67,24 @@ const getProviderDetails = async (req, res) => {
       [providerId]
     );
 
-    console.log(`Availability for provider ${providerId}:`, availability);
+    console.log(`Raw availability for provider ${providerId}:`, availability);
 
-    res.json({ success: true, provider: providerResult[0], availability });
+    // ✅ Transform into format: { "2025-05-14": ["morning", "evening"] }
+    const availabilityMap = {};
+    availability.forEach(({ date, time_slot, is_available }) => {
+      if (is_available) {
+        if (!availabilityMap[date]) {
+          availabilityMap[date] = [];
+        }
+        availabilityMap[date].push(time_slot);
+      }
+    });
+
+    console.log(`Transformed availability for provider ${providerId}:`, availabilityMap);
+
+    // ✅ Send transformed availability
+    res.json({ success: true, provider: providerResult[0], availability: availabilityMap });
+
   } catch (error) {
     console.error("Error fetching provider details:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
