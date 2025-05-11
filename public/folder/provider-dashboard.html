@@ -283,7 +283,6 @@
         settings: `<h2>Settings</h2><p>Configure your account preferences, notification settings, and privacy controls.</p>`,
         help: `<h2>Help & Support</h2><p>Need assistance? Contact our team for support.</p><ul><li>Email: support@findyourpro.com</li><li>Phone: +1-800-123-4567</li></ul>`,
       };
-
       const links = document.querySelectorAll(".sidebar-link");
       const mainContent = document.getElementById("main-content");
       const alertContainer = document.getElementById("alert-container");
@@ -305,7 +304,7 @@
             if (page === "availability") {
               requestAnimationFrame(() => {
                 renderAvailabilityTable();
-                loadAvailability();
+                setTimeout(loadAvailability, 500); // Ensure table loads before fetching availability
               });
             }
           }
@@ -319,35 +318,31 @@
 
       document.querySelector('.sidebar-link[data-page="requests"]').click();
 
-      // Handle Profile Editing
-      function toggleProfileEditing(enable) {
-        [
-          "provName",
-          "provPhone",
-          "provAddress",
-          "provExperience",
-          "profilePic",
-        ].forEach((id) => {
-          document.getElementById(id).disabled = !enable;
-        });
-        document
-          .getElementById("profilePic")
-          .classList.toggle("d-none", !enable);
-        document.getElementById("saveBtn").classList.toggle("d-none", !enable);
-        document
-          .getElementById("cancelBtn")
-          .classList.toggle("d-none", !enable);
-        document.getElementById("editBtn").classList.toggle("d-none", enable);
-      }
-
       // Load Provider Profile
       async function loadProviderProfile() {
         const token = localStorage.getItem("providerToken");
+
+        let providerId = localStorage.getItem("providerId");
+
+        if (!providerId) {
+          console.warn("Provider ID missing, retrying...");
+          await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 500ms
+          providerId = localStorage.getItem("providerId");
+        }
+
+        console.log("Final retrieved provider ID:", providerId);
+
+        if (!providerId) {
+          console.error("Error: Provider ID is still missing.");
+          return;
+        }
+
         try {
           const res = await fetch("/api/provider/dashboard/profile", {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
+
           if (data.success && data.provider) {
             const provider = data.provider;
             document.getElementById("provName").value = provider.name || "";
@@ -363,15 +358,7 @@
               ? `http://localhost:5000/uploads/providers/${provider.profile_pic}`
               : "default-profile.jpg";
             document.getElementById("profilePicPreview").src = profileImage;
-            document
-              .getElementById("profilePic")
-              .addEventListener("change", function (event) {
-                const file = event.target.files[0];
-                if (file) {
-                  document.getElementById("profilePicPreview").src =
-                    URL.createObjectURL(file);
-                }
-              });
+
             toggleProfileEditing(false);
           } else {
             showAlert("danger", "Failed to load profile data.");
@@ -382,85 +369,180 @@
         }
       }
 
-      document.addEventListener("click", function (e) {
-        if (e.target.id === "editBtn") toggleProfileEditing(true);
-        if (e.target.id === "cancelBtn") {
-          loadProviderProfile();
-          toggleProfileEditing(false);
-        }
-      });
+      // Handle Profile Editing
+      function toggleProfileEditing(enable) {
+        [
+          "provName",
+          "provPhone",
+          "provAddress",
+          "provExperience",
+          "profilePic",
+        ].forEach((id) => {
+          document.getElementById(id).disabled = !enable;
+        });
 
-      document.addEventListener("submit", async function (e) {
+        document.getElementById("saveBtn").classList.toggle("d-none", !enable);
+        document
+          .getElementById("cancelBtn")
+          .classList.toggle("d-none", !enable);
+        document.getElementById("editBtn").classList.toggle("d-none", enable);
+      }
+
+      // Load Availability
+      // ✅ Load Provider Availability from Backend
+      async function loadAvailability() {
         const token = localStorage.getItem("providerToken");
+        const providerId = localStorage.getItem("providerId"); // ✅ Retrieve provider ID correctly
 
-        if (e.target.id === "profileForm") {
-          e.preventDefault();
-          const formData = new FormData();
-          formData.append("name", document.getElementById("provName").value);
-          formData.append("phone", document.getElementById("provPhone").value);
-          formData.append(
-            "address",
-            document.getElementById("provAddress").value
-          );
-          formData.append(
-            "experience",
-            document.getElementById("provExperience").value
-          );
-          const pic = document.getElementById("profilePic").files[0];
-          if (pic) formData.append("profile_pic", pic);
+        console.log("Stored provider ID from Local Storage:", providerId); // ✅ Debug log
 
-          try {
-            const res = await fetch("/api/provider/dashboard/profile", {
-              method: "PUT",
-              headers: { Authorization: `Bearer ${token}` },
-              body: formData,
-            });
-            const result = await res.json();
-            showAlert(result.success ? "success" : "danger", result.message);
-            loadProviderProfile();
-          } catch (err) {
-            console.error("Error saving profile:", err);
-            showAlert("danger", "Failed to update profile.");
-          }
+        if (!providerId) {
+          console.error("Error: Provider ID is still missing.");
+          return;
         }
 
+        try {
+          const res = await fetch(`/api/provider/${providerId}/availability`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+
+          console.log(
+            "Received availability data:",
+            JSON.stringify(data, null, 2)
+          ); // ✅ Debug log
+
+          if (data.success && data.availability) {
+            data.availability.forEach(({ date, time_slot, is_available }) => {
+              const checkboxID = `${date}-${time_slot}`;
+              const checkbox = document.getElementById(checkboxID);
+
+              if (checkbox) {
+                checkbox.checked = is_available;
+              } else {
+                console.warn(`Checkbox not found for ID: ${checkboxID}`);
+              }
+            });
+          }
+        } catch (err) {
+          console.error("Error loading availability:", err);
+        }
+      }
+
+      // ✅ Render Availability Table for Editing
+      function renderAvailabilityTable() {
+        const slots = ["morning", "afternoon", "evening"];
+        const tableBody = document.getElementById("availabilityTableBody");
+        tableBody.innerHTML = "";
+
+        const today = new Date();
+        const weekdays = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+
+        for (let i = 0; i < 7; i++) {
+          let date = new Date();
+          date.setDate(today.getDate() + i);
+
+          let formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+          let weekday = weekdays[date.getDay()]; // ✅ Correct weekday display
+
+          const row = document.createElement("tr");
+
+          const dateCell = document.createElement("td");
+          dateCell.innerHTML = `<input type="text" value="${formattedDate}" class="form-control" readonly>`;
+          row.appendChild(dateCell);
+
+          slots.forEach((slot) => {
+            const slotCell = document.createElement("td");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `${formattedDate}-${slot}`;
+            checkbox.classList.add("form-check-input");
+            slotCell.appendChild(checkbox);
+            row.appendChild(slotCell);
+          });
+
+          tableBody.appendChild(row);
+        }
+      }
+
+      // ✅ Handle Availability Submission
+      document.addEventListener("submit", async function (e) {
         if (e.target.id === "availabilityForm") {
           e.preventDefault();
 
-          // Collect availability data from checkboxes
+          const token = localStorage.getItem("providerToken");
+          const providerId = localStorage.getItem("providerId");
+
+          console.log("🔹 Stored Provider Token:", token); // ✅ Check if token exists
+          console.log("🔹 Stored Provider ID:", providerId); // ✅ Check if provider_id exists
+
+          if (!token) {
+            console.error("❌ Error: No authentication token found.");
+            return;
+          }
+
+          if (!providerId) {
+            console.error("❌ Error: Provider ID is missing.");
+            return;
+          }
+
+          if (!token) {
+            console.error("❌ Error: No authentication token found.");
+            return;
+          } // ✅ Fix provider ID retrieval
+
+          if (!providerId) {
+            console.error("Error: Provider ID is missing.");
+            return;
+          }
+
           const availabilityData = [];
-          const days = [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-          ];
           const slots = ["morning", "afternoon", "evening"];
-          days.forEach((day) => {
-            slots.forEach((slot) => {
-              const checkbox = document.getElementById(`${day}-${slot}`);
-              if (checkbox && checkbox.checked) {
+
+          document
+            .querySelectorAll("#availabilityTableBody tr")
+            .forEach((row) => {
+              const dateInput = row.querySelector("td input[type='text']");
+              if (!dateInput) return;
+
+              const formattedDate = dateInput.value;
+
+              slots.forEach((slot) => {
+                const checkbox = row.querySelector(
+                  `td input[id="${formattedDate}-${slot}"]`
+                );
+
                 availabilityData.push({
-                  day_of_week: day,
+                  date: formattedDate,
                   time_slot: slot,
-                  is_available: true,
+                  is_available: checkbox && checkbox.checked,
                 });
-              }
+              });
             });
-          });
+
+          console.log("Final Availability Data:", availabilityData);
 
           try {
-            const res = await fetch("/api/provider/dashboard/availability", {
+            const res = await fetch("/api/provider/availability", {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: token ? `Bearer ${token}` : "", // ✅ Ensure correct format
               },
               body: JSON.stringify({ availability: availabilityData }),
             });
+
+            console.log(`getting thisngs,${res}`);
             const result = await res.json();
             showAlert(result.success ? "success" : "danger", result.message);
           } catch (err) {
@@ -470,64 +552,9 @@
         }
       });
 
+      // ✅ Display Alerts
       function showAlert(type, message) {
         alertContainer.innerHTML = `<div class="alert alert-${type} mt-3">${message}</div>`;
-      }
-
-      // Render the Availability Table
-      function renderAvailabilityTable() {
-        const days = [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ];
-        const slots = ["morning", "afternoon", "evening"];
-
-        const tableBody = document.getElementById("availabilityTableBody");
-        tableBody.innerHTML = "";
-        days.forEach((day) => {
-          const row = document.createElement("tr");
-          const dayCell = document.createElement("td");
-          dayCell.textContent = day;
-          row.appendChild(dayCell);
-
-          slots.forEach((slot) => {
-            const slotCell = document.createElement("td");
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = `${day}-${slot}`;
-            checkbox.classList.add("form-check-input");
-            slotCell.appendChild(checkbox);
-            row.appendChild(slotCell);
-          });
-          tableBody.appendChild(row);
-        });
-      }
-
-      async function loadAvailability() {
-        const token = localStorage.getItem("providerToken");
-        try {
-          const res = await fetch("/api/provider/dashboard/availability", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await res.json();
-          if (data.success && data.availability) {
-            data.availability.forEach((item) => {
-              const checkbox = document.getElementById(
-                `${item.day_of_week}-${item.time_slot}`
-              );
-              if (checkbox) {
-                checkbox.checked = item.is_available;
-              }
-            });
-          }
-        } catch (err) {
-          console.error("Error loading availability:", err);
-        }
       }
     </script>
   </body>

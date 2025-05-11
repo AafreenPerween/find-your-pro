@@ -100,7 +100,7 @@ exports.getDashboardData = async (req, res) => {
          SELECT
          r.request_id AS id,
          c.name           AS customer,
-         p.name           AS worker,
+         p.name           AS provider,
          r.status,
          r.service_type,
          DATE_FORMAT(r.created_at, '%Y-%m-%d') AS date

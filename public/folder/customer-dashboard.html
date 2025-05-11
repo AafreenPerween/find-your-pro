@@ -321,54 +321,91 @@
           },
         });
       }
-
       $(document).on("click", ".view-provider-btn", async function () {
         const providerId = $(this).data("provider");
 
         try {
           const res = await fetch(`/api/providers/${providerId}`);
-          const data = await res.json();
+          const providerData = await res.json();
 
-          if (data.success && data.provider) {
-            const provider = data.provider;
+          if (providerData.success && providerData.provider) {
+            const provider = providerData.provider;
 
+            // ✅ Fetch provider availability
+            const availabilityRes = await fetch(
+              `/api/provider/${providerId}/availability`
+            );
+            const availabilityData = await availabilityRes.json();
+
+            if (!availabilityData.success) {
+              console.error("Failed to fetch provider availability");
+              return alert("Unable to load availability data.");
+            }
+
+            const availableDates = new Set();
+            const availableSlots = {};
+
+            // ✅ Process availability
+            availabilityData.availability.forEach(
+              ({ date, time_slot, is_available }) => {
+                if (is_available) {
+                  availableDates.add(date);
+                  if (!availableSlots[date]) availableSlots[date] = [];
+                  availableSlots[date].push(time_slot);
+                }
+              }
+            );
+
+            // ✅ Inject booking form into DOM
             mainContent.innerHTML = `
-          <div class="row">
-            <div class="col-md-4">
-              <img src="/uploads/providers/${
-                provider.profile_pic || "default.jpg"
-              }" class="img-fluid rounded" />
-            </div>
-            <div class="col-md-8">
-              <h2>${provider.name}</h2>
-              <p><strong>Service:</strong> ${provider.service_type}</p>
-              <p><strong>Experience:</strong> ${provider.experience}years</p>
-              <p><strong>Address:</strong> ${provider.address}</p>
-              <!-- <p><strong>Email:</strong> ${provider.email}</p>
-              <p><strong>Phone:</strong> ${provider.phone}</p>
-              <p><strong>Rating:</strong> ${provider.avg_rating}</p> -->
-              <h4>Leave a Booking Request</h4>
-              <form id="bookingForm">
-                <input type="hidden" name="provider_id" value="${
-                  provider.provider_id
-                }" />
-                <div class="mb-2">
-                  <label class="form-label">Preferred Date</label>
-                  <input type="date" name="date" class="form-control" required />
-                </div>
-                <div class="mb-2">
-                  <label class="form-label">Preferred Time</label>
-                  <input type="time" name="time" class="form-control" required />
-                </div>
-                <div class="mb-2">
-                  <label class="form-label">Notes</label>
-                  <textarea name="notes" class="form-control"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Submit Request</button>
-              </form>
-            </div>
+        <div class="row">
+          <div class="col-md-4">
+            <img src="/uploads/providers/${
+              provider.profile_pic || "default.jpg"
+            }" class="img-fluid rounded" />
           </div>
-        `;
+          <div class="col-md-8">
+            <h2>${provider.name}</h2>
+            <p><strong>Service:</strong> ${provider.service_type}</p>
+            <p><strong>Experience:</strong> ${provider.experience} years</p>
+            <p><strong>Address:</strong> ${provider.address}</p>
+
+            <h4>Leave a Booking Request</h4>
+            <p class="text-muted">Only available dates & time slots are selectable.</p>
+
+            <form id="bookingForm">
+              <input type="hidden" name="provider_id" value="${
+                provider.provider_id
+              }" />
+
+              <div class="mb-2">
+                <label class="form-label">Preferred Date</label>
+                <select name="preferred_date" class="form-select" id="preferred_date" required>
+                  ${[...availableDates]
+                    .map((date) => `<option value="${date}">${date}</option>`)
+                    .join("")}
+                </select>
+              </div>
+
+              <div class="mb-2">
+                <label for="preferred_time">Preferred Time Slot</label>
+                <select id="preferred_time" name="preferred_time" class="form-select" disabled required>
+                  <option value="">Select Time Slot</option>
+                </select>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label">Problem Statement</label>
+                <textarea name="problem_statement" class="form-control"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-success">Submit Request</button>
+            </form>
+          </div>
+        </div>
+      `;
+
+            // ✅ Store available slots for later use in the delegated handler
           }
         } catch (err) {
           console.error("Failed to fetch provider details:", err);
@@ -376,6 +413,42 @@
         }
       });
 
+      // ✅ Delegate time slot loading to a dynamic change event
+      // ✅ Save slots globally for access during change event
+
+      // ✅ Populate time slots when preferred date changes
+      $(document).on("change", "#preferred_date", function () {
+        const selectedDate = this.value;
+        const timeSlotDropdown = $("#preferred_time");
+
+        console.log("Selected date:", selectedDate);
+        console.log(
+          "Available slots for date:",
+          window.currentAvailableSlots?.[selectedDate]
+        );
+
+        timeSlotDropdown
+          .empty()
+          .append(`<option value="">Select Time Slot</option>`);
+
+        const availableSlots = window.currentAvailableSlots; // ✅ Fix here
+
+        if (availableSlots && availableSlots[selectedDate]) {
+          availableSlots[selectedDate].forEach((slot) => {
+            timeSlotDropdown.append(
+              `<option value="${slot}">${
+                slot.charAt(0).toUpperCase() + slot.slice(1)
+              }</option>`
+            );
+          });
+          timeSlotDropdown.prop("disabled", false);
+        } else {
+          console.warn("No available slots for selected date.");
+          timeSlotDropdown.prop("disabled", true);
+        }
+      });
+
+      // ✅ Handle form submission
       $(document).on("submit", "#bookingForm", async function (e) {
         e.preventDefault();
         const token = localStorage.getItem("customerToken");
@@ -384,7 +457,7 @@
           provider_id: this.provider_id.value,
           preferred_date: document.getElementById("preferred_date").value,
           preferred_time: document.getElementById("preferred_time").value,
-          notes: this.notes.value,
+          problem_statement: this.problem_statement.value,
         };
 
         try {

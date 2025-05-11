@@ -46,76 +46,78 @@ const getProviderDetails = async (req, res) => {
   const providerId = req.params.id;
 
   try {
-    // Get provider basic info
     const [providerResult] = await db.query(
       `SELECT provider_id AS id, name, service_type, 
               COALESCE(profile_pic, '/uploads/default_profile.png') AS profile_pic
        FROM providers 
-       WHERE provider_id = ?`,
+       WHERE provider_id = ?`, 
       [providerId]
     );
 
-    if (!providerResult || providerResult.length === 0) {
+    if (!providerResult.length) {
       return res.status(404).json({ success: false, message: "Provider not found" });
     }
 
-    const provider = providerResult[0];
-
-    // Get reviews with customer names
-    const [reviews] = await db.query(
-      `SELECT c.name AS customerName, r.rating, r.comment
-       FROM reviews r
-       JOIN customers c ON r.customer_id = c.customer_id
-       WHERE r.provider_id = ?`,
+    // ✅ Fetch provider availability
+    const [availability] = await db.query(
+      `SELECT DATE_FORMAT(date, '%Y-%m-%d') AS date, time_slot, is_available 
+       FROM provider_availability 
+       WHERE provider_id = ? 
+       ORDER BY date ASC, FIELD(time_slot, 'morning', 'afternoon', 'evening')`,
       [providerId]
     );
 
-    // Calculate average rating and total reviews
-    const totalReviews = reviews.length;
-    const averageRating = totalReviews > 0
-      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1)
-      : null;
+    console.log(`Availability for provider ${providerId}:`, availability);
 
-    // Attach additional info to response
-    provider.reviews = reviews;
-    provider.totalReviews = totalReviews;
-    provider.averageRating = averageRating;
-
-    res.json({ success: true, provider });
+    res.json({ success: true, provider: providerResult[0], availability });
   } catch (error) {
     console.error("Error fetching provider details:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
+// ✅ Create Booking Request
 const createBookingRequest = async (req, res) => {
   const customerId = req.customer.customer_id;
-  const { provider_id, preferred_date, preferred_time, notes } = req.body;
-  console.log("Booking data:", { customerId, provider_id, preferred_date, preferred_time, notes });
+  const { provider_id, preferred_date, preferred_time, problem_statement } = req.body;
 
   if (!provider_id || !preferred_date || !preferred_time) {
-    return res.status(400).json({
-      success: false,
-      message: "Missing booking fields",
-      missingFields: {
-        provider_id: !!provider_id,
-        preferred_date: !!preferred_date,
-        preferred_time: !!preferred_time
-      }
-    });
+    return res.status(400).json({ success: false, message: "Missing required booking fields" });
   }
-  console.log("Booking data:", { customerId, provider_id, preferred_date, preferred_time, notes });
 
   try {
-    await db.query(
-      `INSERT INTO requests (customer_id, provider_id, preferred_date, preferred_time, notes, status)
-       VALUES (?, ?, ?, ?, ?, 'pending')`,
-      [customerId, provider_id, preferred_date, preferred_time, notes || ""]
+    // ✅ Check Provider Availability without overwriting data
+    const [availability] = await db.query(
+      `SELECT is_available FROM provider_availability 
+       WHERE provider_id = ? AND date = ? AND time_slot = ?`,
+      [provider_id, preferred_date, preferred_time]
     );
 
-    res.json({ success: true, message: "Booking request submitted" });
+    if (!availability.length || !availability[0].is_available) {
+      return res.status(400).json({ success: false, message: "Provider not available at selected date/time." });
+    }
+
+    // ✅ Prevent Overwriting Booked Slots
+    const [existingBooking] = await db.query(
+      `SELECT booking_id FROM bookings 
+       WHERE provider_id = ? AND preferred_date = ? AND preferred_time = ?`,
+      [provider_id, preferred_date, preferred_time]
+    );
+
+    if (existingBooking.length) {
+      return res.status(400).json({ success: false, message: "Time slot is already booked." });
+    }
+
+    // ✅ Store Booking Request Without Affecting Availability
+    await db.query(
+      `INSERT INTO bookings (customer_id, provider_id, preferred_date, preferred_time, problem_statement, status) 
+       VALUES (?, ?, ?, ?, ?, 'pending')`,
+      [customerId, provider_id, preferred_date, preferred_time, problem_statement]
+    );
+
+    res.json({ success: true, message: "Booking request submitted successfully!" });
   } catch (error) {
-    console.error("Error creating booking request:", error);
+    console.error("Error processing booking:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

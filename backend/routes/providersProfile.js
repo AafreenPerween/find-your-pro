@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
+ // ✅ Ensure proper import
+
+
 
 // Get providers by service type
 router.get('/', async (req, res) => {

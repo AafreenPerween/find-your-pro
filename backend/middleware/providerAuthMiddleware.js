@@ -2,27 +2,31 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 module.exports = function (req, res, next) {
-  const authHeader = req.header("Authorization");
-  // console.log("Auth Header:", authHeader); // Log full header
+ 
+console.log("🔍 Incoming Authentication Request:");
+console.log("➡ Method:", req.method);
+console.log("➡ URL:", req.originalUrl);
+console.log("🔍 Received Headers:", JSON.stringify(req.headers, null, 2));
+console.log("➡ Auth Header:", req.header("Authorization")); // ✅ Logs full auth header
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ msg: "Access Denied! No token provided." });
-  }
+const authHeader = req.header("Authorization");
+const token = authHeader ? authHeader.split(" ")[1] : null;
+console.log("🛠 Extracted Token:", token); // ✅ Logs extracted token
 
-  const token = authHeader.split(" ")[1]; // Extract token
-  // console.log("Extracted Token:", token);
-
-  if (!token) {
-    return res.status(401).json({ msg: "Token missing!" });
-  }
-
-  try {
+try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Verified Provider:", verified);
-    req.provider = verified; // Attach provider data
+    console.log("✅ Decoded Token Data:", JSON.stringify(verified, null, 2)); // ✅ Debug full token payload
+
+    if (!verified.provider_id) {
+        console.error("❌ Provider ID missing in token!");
+        return res.status(401).json({ success: false, message: "Invalid token format: Provider ID missing." });
+    }
+
+    req.provider = { provider_id: verified.provider_id }; // ✅ Attach provider_id properly
+    console.log("🔹 Provider authenticated successfully:", req.provider.provider_id);
     next();
-  } catch (err) {
-    console.log("JWT Error:", err.message);
-    res.status(401).json({ msg: "Invalid or Expired Token!" });
-  }
+} catch (err) {
+    console.error("❌ JWT Verification Error:", err.message);
+    return res.status(401).json({ success: false, message: "Invalid or Expired Token!" });
+}
 };
