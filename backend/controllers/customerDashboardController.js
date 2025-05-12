@@ -149,7 +149,7 @@ const getCustomerBookings = async (req, res) => {
   try {
     // ✅ Fetch current requests (pending) with provider name
     const [pendingRequests] = await db.query(
-      `SELECT r.request_id, r.provider_id, p.name AS provider_name, 
+      `SELECT r.request_id, r.provider_id, p.name AS provider_name, p.service_type AS provider_service,
               r.preferred_date, r.preferred_time, r.status, r.created_at 
        FROM requests r
        JOIN providers p ON r.provider_id = p.provider_id
@@ -160,7 +160,7 @@ const getCustomerBookings = async (req, res) => {
 
     // ✅ Fetch past bookings (accepted/rejected) with provider name
     const [bookingHistory] = await db.query(
-      `SELECT r.request_id, r.provider_id, p.name AS provider_name, 
+      `SELECT r.request_id, r.provider_id, p.name AS provider_name, p.service_type AS provider_service,
               r.preferred_date, r.preferred_time, r.status, r.created_at 
        FROM requests r
        JOIN providers p ON r.provider_id = p.provider_id

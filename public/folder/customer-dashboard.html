@@ -352,6 +352,7 @@
   <thead>
     <tr>
       <th>Provider</th>
+      <th>Profession</th>
       <th>Booking Date</th>
       <th>Booking Time</th>
       <th>Status</th>
@@ -365,6 +366,7 @@
   <thead>
     <tr>
       <th>Provider</th>
+      <th>Profession</th>
       <th>Booking Date</th>
       <th>Booking Time</th>
       <th>Status</th>
@@ -771,6 +773,14 @@
         }
       });
 
+      function formatPreferredDate(dateString) {
+        const date = new Date(dateString);
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${month}/${day}/${year}`;
+      }
+
       async function loadCustomerBookings() {
         const token = localStorage.getItem("customerToken");
 
@@ -805,7 +815,9 @@
                 (request) => `
         <tr>
           <td>${request.provider_name || "Unknown"}</td>
-          <td>${request.preferred_date}</td>
+          <td>${request.provider_service || "Unknown"}</td>
+
+          <td>${formatPreferredDate(request.preferred_date)}</td>
           <td>${request.preferred_time}</td>
           <td>${request.status}</td>
           <td>${new Date(request.created_at).toLocaleString()}</td>
@@ -819,7 +831,8 @@
                 (request) => `
         <tr>
           <td>${request.provider_name || "Unknown"}</td>
-          <td>${request.preferred_date}</td>
+          <td>${request.provider_service || "Unknown"}</td>
+          <td>${formatPreferredDate(request.preferred_date)}</td>
           <td>${request.preferred_time}</td>
           <td>${request.status}</td>
           <td>${new Date(request.created_at).toLocaleString()}</td>
