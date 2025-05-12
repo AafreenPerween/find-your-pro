@@ -91,17 +91,20 @@ const getProviderDetails = async (req, res) => {
   }
 };
 
+
+
 // ✅ Create Booking Request
 const createBookingRequest = async (req, res) => {
   const customerId = req.customer.customer_id;
-  const { provider_id, preferred_date, preferred_time, problem_statement } = req.body;
+  const { provider_id, service_type, preferred_date, preferred_time, problem_statement } = req.body;
 
-  if (!provider_id || !preferred_date || !preferred_time) {
-    return res.status(400).json({ success: false, message: "Missing required booking fields" });
+  // ✅ Validate required fields
+  if (!provider_id || !preferred_date || !preferred_time ) {
+    return res.status(400).json({ success: false, message: "Missing required fields." });
   }
 
   try {
-    // ✅ Check Provider Availability without overwriting data
+    // ✅ Check if the selected slot is available
     const [availability] = await db.query(
       `SELECT is_available FROM provider_availability 
        WHERE provider_id = ? AND date = ? AND time_slot = ?`,
@@ -112,9 +115,9 @@ const createBookingRequest = async (req, res) => {
       return res.status(400).json({ success: false, message: "Provider not available at selected date/time." });
     }
 
-    // ✅ Prevent Overwriting Booked Slots
+    // ✅ Prevent duplicate bookings (Ensure slot isn’t already booked)
     const [existingBooking] = await db.query(
-      `SELECT booking_id FROM bookings 
+      `SELECT request_id FROM requests 
        WHERE provider_id = ? AND preferred_date = ? AND preferred_time = ?`,
       [provider_id, preferred_date, preferred_time]
     );
@@ -123,24 +126,61 @@ const createBookingRequest = async (req, res) => {
       return res.status(400).json({ success: false, message: "Time slot is already booked." });
     }
 
-    // ✅ Store Booking Request Without Affecting Availability
+    // ✅ Store booking request
     await db.query(
-      `INSERT INTO bookings (customer_id, provider_id, preferred_date, preferred_time, problem_statement, status) 
+      `INSERT INTO requests (customer_id, provider_id, preferred_date, preferred_time, problem_statement, status) 
        VALUES (?, ?, ?, ?, ?, 'pending')`,
       [customerId, provider_id, preferred_date, preferred_time, problem_statement]
     );
 
-    res.json({ success: true, message: "Booking request submitted successfully!" });
+    
+    alert("Booking request submitted successfully! Redirecting to your Bookings...");
+      window.location.href = "/customer/dashboard/bookings";
+
   } catch (error) {
-    console.error("Error processing booking:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    console.error("Error processing booking request:", error);
   }
 };
 
+
+const getCustomerBookings = async (req, res) => {
+  const customerId = req.customer.customer_id;
+
+  try {
+    // ✅ Fetch current requests (pending) with provider name
+    const [pendingRequests] = await db.query(
+      `SELECT r.request_id, r.provider_id, p.name AS provider_name, 
+              r.preferred_date, r.preferred_time, r.status, r.created_at 
+       FROM requests r
+       JOIN providers p ON r.provider_id = p.provider_id
+       WHERE r.customer_id = ? AND r.status = 'pending'
+       ORDER BY r.created_at DESC`,
+      [customerId]
+    );
+
+    // ✅ Fetch past bookings (accepted/rejected) with provider name
+    const [bookingHistory] = await db.query(
+      `SELECT r.request_id, r.provider_id, p.name AS provider_name, 
+              r.preferred_date, r.preferred_time, r.status, r.created_at 
+       FROM requests r
+       JOIN providers p ON r.provider_id = p.provider_id
+       WHERE r.customer_id = ? AND r.status IN ('accepted', 'rejected','completed')
+       ORDER BY r.created_at DESC`,
+      [customerId]
+    );
+
+    res.json({ success: true, pendingRequests, bookingHistory });
+
+  } catch (error) {
+    console.error("Error fetching customer bookings:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   getCustomerProfile,
   updateCustomerProfile,
   getProviderDetails,
-  createBookingRequest
+  createBookingRequest,
+  getCustomerBookings
 };

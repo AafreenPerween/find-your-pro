@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 app.use("/api/auth/customer", require("./backend/routes/customerAuthRoutes"));
 app.use("/api/auth/provider", require("./backend/routes/providerAuthRoutes"));
 app.use("/api/customer/dashboard", require("./backend/routes/customerDashboardRoutes"));
+app.use("/api/customer-dashboard", require("./backend/routes/customerDashboardRoutes"));
 app.use("/api/provider/dashboard", require("./backend/routes/providerDashboardRoutes"));
 
 const providerRoutes = require('./backend/routes/providersProfile');

@@ -346,7 +346,36 @@
 
         bookings: `
       <h2>My Bookings</h2>
-      <p>Track current and previous service requests here.</p>`,
+      <p>Track current and previous service requests here.</p>
+      <h2>Current Requests</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>Booking Date</th>
+      <th>Booking Time</th>
+      <th>Status</th>
+      <th>Request Date</th>
+    </tr>
+  </thead>
+  <tbody id="pendingRequestsTable"></tbody>
+</table>
+<h2>Booking History</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>Booking Date</th>
+      <th>Booking Time</th>
+      <th>Status</th>
+      <th>Request Date</th>
+    </tr>
+  </thead>
+  <tbody id="bookingHistoryTable"></tbody>
+</table>
+
+      
+      `,
 
         profile: `
       <h2>My Profile</h2>
@@ -444,6 +473,12 @@
                 $("#serviceFilter").on("change", function () {
                   loadProviders(this.value);
                 });
+              }, 100);
+            } else if (page === "bookings") {
+              setTimeout(loadCustomerBookings, 100);
+            } else if (page === "settings") {
+              setTimeout(() => {
+                applyTheme(localStorage.getItem("theme") || "light");
               }, 100);
             }
           }
@@ -710,13 +745,16 @@
 
         const formData = {
           provider_id: this.provider_id.value,
+          //service_type: document.getElementById("service_type").value,
           preferred_date: document.getElementById("preferred_date").value,
           preferred_time: document.getElementById("preferred_time").value,
           problem_statement: this.problem_statement.value,
         };
 
+        console.log("Booking request payload:", formData);
+
         try {
-          const res = await fetch("/api/customer/dashboard/book", {
+          const res = await fetch("/api/customer/dashboard/bookings", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -728,10 +766,77 @@
           const result = await res.json();
           alert(result.message || "Booking request submitted successfully!");
         } catch (err) {
-          console.error(err);
+          console.error("Error submitting booking request:", err);
           alert("Failed to submit booking request.");
         }
       });
+
+      async function loadCustomerBookings() {
+        const token = localStorage.getItem("customerToken");
+
+        try {
+          const res = await fetch("/api/customer-dashboard/bookings", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            const pendingTable = document.getElementById(
+              "pendingRequestsTable"
+            );
+            const historyTable = document.getElementById("bookingHistoryTable");
+
+            // 🔍 Debug Logs
+            console.log("Pending Requests Table:", pendingTable);
+            console.log("Booking History Table:", historyTable);
+
+            if (!pendingTable || !historyTable) {
+              console.error(
+                "Booking history table elements are missing in the DOM."
+              );
+              alert("Booking history section could not be loaded.");
+              return;
+            }
+
+            pendingTable.innerHTML = data.pendingRequests
+              .map(
+                (request) => `
+        <tr>
+          <td>${request.provider_name || "Unknown"}</td>
+          <td>${request.preferred_date}</td>
+          <td>${request.preferred_time}</td>
+          <td>${request.status}</td>
+          <td>${new Date(request.created_at).toLocaleString()}</td>
+        </tr>
+      `
+              )
+              .join("");
+
+            historyTable.innerHTML = data.bookingHistory
+              .map(
+                (request) => `
+        <tr>
+          <td>${request.provider_name || "Unknown"}</td>
+          <td>${request.preferred_date}</td>
+          <td>${request.preferred_time}</td>
+          <td>${request.status}</td>
+          <td>${new Date(request.created_at).toLocaleString()}</td>
+        </tr>
+      `
+              )
+              .join("");
+          } else {
+            alert("Failed to load booking history.");
+          }
+        } catch (err) {
+          console.error("Error loading customer bookings:", err);
+          alert("Unable to fetch booking history.");
+        }
+      }
+
+      // document.addEventListener("DOMContentLoaded", loadCustomerBookings);
     </script>
 
     <script>
