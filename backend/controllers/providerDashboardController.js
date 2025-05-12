@@ -140,9 +140,85 @@ const updateProviderAvailability = async (req, res) => {
   }
 };
 
+
+const getProviderBookingRequests = async (req, res) => {
+  const providerId = req.provider.provider_id;
+
+  try {
+    const [requests] = await db.query(
+      `SELECT r.request_id, r.customer_id, c.name AS customer_name, c.address AS customer_address,
+              r.preferred_date, r.preferred_time, r.problem_statement, r.status, r.created_at
+       FROM requests r
+       JOIN customers c ON r.customer_id = c.customer_id
+       WHERE r.provider_id = ? AND r.status = 'pending'
+       ORDER BY r.created_at DESC`,
+      [providerId]
+    );
+
+    res.json({ success: true, requests });
+  } catch (error) {
+    console.error("Error fetching provider booking requests:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+const handleBookingRequest = async (req, res) => {
+  const providerId = req.provider.provider_id;
+  const { requestId } = req.params;
+  const { action } = req.body; // expected: 'accepted' or 'rejected'
+
+  if (!['accepted', 'rejected'].includes(action)) {
+    return res.status(400).json({ success: false, message: "Invalid action." });
+  }
+
+  try {
+    const [result] = await db.query(
+      `UPDATE requests 
+       SET status = ? 
+       WHERE request_id = ? AND provider_id = ? AND status = 'pending'`,
+      [action, requestId, providerId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Request not found or already handled." });
+    }
+
+    res.json({ success: true, message: `Request ${action} successfully.` });
+  } catch (error) {
+    console.error("Error handling booking request:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+const getProviderBookingHistory = async (req, res) => {
+  const providerId = req.provider.provider_id;
+
+  try {
+    const [history] = await db.query(
+      `SELECT r.request_id, r.customer_id, c.name AS customer_name, c.address,
+              r.problem_statement, r.preferred_date,
+              r.preferred_time, r.status, r.created_at
+       FROM requests r
+       JOIN customers c ON r.customer_id = c.customer_id
+       WHERE r.provider_id = ? AND r.status IN ('accepted', 'rejected', 'completed')
+       ORDER BY r.created_at DESC`,
+      [providerId]
+    );
+
+    res.json({ success: true, history });
+  } catch (error) {
+    console.error("Error fetching provider booking history:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   getProviderProfile,
   updateProviderProfile,
   getProviderAvailability,
-  updateProviderAvailability
+  updateProviderAvailability,
+  getProviderBookingRequests,
+  handleBookingRequest,
+  getProviderBookingHistory
 };

@@ -30,6 +30,8 @@ app.use("/api/auth/provider", require("./backend/routes/providerAuthRoutes"));
 app.use("/api/customer/dashboard", require("./backend/routes/customerDashboardRoutes"));
 app.use("/api/customer-dashboard", require("./backend/routes/customerDashboardRoutes"));
 app.use("/api/provider/dashboard", require("./backend/routes/providerDashboardRoutes"));
+app.use("/api/provider-dashboard", require("./backend/routes/providerDashboardRoutes"));
+
 
 const providerRoutes = require('./backend/routes/providersProfile');
 app.use('/api/providers', providerRoutes);

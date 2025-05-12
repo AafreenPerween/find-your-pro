@@ -410,9 +410,9 @@
           >Booking Requests</a
         >
         <a href="#" class="sidebar-link" data-page="history">Booking History</a>
-        <a href="#" class="sidebar-link" data-page="reviews"
+        <!-- <a href="#" class="sidebar-link" data-page="reviews"
           >Reviews & Ratings</a
-        >
+        > -->
         <a href="#" class="sidebar-link" data-page="availability"
           >Manage Availability</a
         >
@@ -442,9 +442,34 @@
       }
 
       const contentMap = {
-        requests: `<h2>Booking Requests</h2><p>View and respond to incoming service requests from customers.</p>`,
-        history: `<h2>Booking History</h2><p>Review all your completed and past service bookings.</p>`,
-        reviews: `<h2>Reviews & Ratings</h2><p>Check what customers are saying about your services.</p>`,
+        requests: `<h2>Booking Requests</h2><p>View and respond to incoming service requests from customers.</p>
+        <div class="container mt-4">
+  
+  <div id="bookingRequestsContainer" class="row gy-4">
+    <!-- Cards will be dynamically inserted here -->
+  </div>
+</div>
+
+        `,
+        history: `<h2>Booking History</h2>
+<p>Here are your past service bookings.</p>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>Customer</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Address</th>
+        <th>Problem</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="providerBookingHistoryTable"></tbody>
+  </table>
+</div>
+</p>`,
+        // reviews: `<h2>Reviews & Ratings</h2><p>Check what customers are saying about your services.</p>`,
         availability: `
           <div id="manage-availability" class="dashboard-section">
             <div class="container mt-4">
@@ -540,10 +565,35 @@
             mainContent.innerHTML =
               contentMap[page] || `<h2>Page not found</h2>`;
             if (page === "profile") requestAnimationFrame(loadProviderProfile);
-            if (page === "availability") {
+            else if (page === "availability") {
               requestAnimationFrame(() => {
                 renderAvailabilityTable();
                 setTimeout(loadAvailability, 500); // Ensure table loads before fetching availability
+              });
+            } else if (page === "requests") {
+              requestAnimationFrame(() => {
+                loadBookingRequests();
+              });
+            } else if (page === "history") {
+              requestAnimationFrame(() => {
+                loadProviderBookingHistory();
+              });
+            } else if (page === "settings") {
+              requestAnimationFrame(() => {
+                const themeToggle = document.getElementById("themeToggle");
+                const themeIcon = document.getElementById("themeIcon");
+                const themeText = document.getElementById("themeText");
+
+                themeToggle.addEventListener("click", function () {
+                  document.body.classList.toggle("dark-mode");
+                  if (document.body.classList.contains("dark-mode")) {
+                    themeIcon.textContent = "🌙";
+                    themeText.textContent = "Dark Mode";
+                  } else {
+                    themeIcon.textContent = "🌞";
+                    themeText.textContent = "Light Mode";
+                  }
+                });
               });
             }
           }
@@ -794,6 +844,170 @@
       // ✅ Display Alerts
       function showAlert(type, message) {
         alertContainer.innerHTML = `<div class="alert alert-${type} mt-3">${message}</div>`;
+      }
+
+      function formatPreferredDate(dateString) {
+        const date = new Date(dateString);
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${month}/${day}/${year}`;
+      }
+
+      async function loadBookingRequests() {
+        const token = localStorage.getItem("providerToken");
+
+        try {
+          const res = await fetch("/api/provider-dashboard/booking-requests", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            const container = document.getElementById(
+              "bookingRequestsContainer"
+            );
+            container.innerHTML = ""; // Clear previous content
+
+            if (data.requests.length === 0) {
+              container.innerHTML = `<p class="text-muted">No new booking requests.</p>`;
+              return;
+            }
+
+            data.requests.forEach((request) => {
+              const card = document.createElement("div");
+              card.className = "col-md-6 col-lg-4";
+
+              card.innerHTML = `
+          <div class="card shadow-sm rounded-4 h-100 p-4">
+            <div class="card-body  ">
+              <h5 class="card-title">${request.customer_name}</h5><br>
+              <h6 class="card-subtitle mb-2 text-muted">${formatPreferredDate(
+                request.preferred_date
+              )} at ${request.preferred_time}</h6>
+               <p class="card-text">Address: ${request.customer_address}</p>
+              <p class="card-text"><strong>Problem:</strong> ${
+                request.problem_statement
+              }</p>
+              <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-success btn-sm" onclick="handleRequest('${
+                  request.request_id
+                }', 'accepted')">Accept</button>
+                <button class="btn btn-danger btn-sm" onclick="handleRequest('${
+                  request.request_id
+                }', 'rejected')">Reject</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+              container.appendChild(card);
+            });
+          } else {
+            alert("Failed to fetch booking requests.");
+          }
+        } catch (error) {
+          console.error("Error loading booking requests:", error);
+          alert("Error loading booking requests.");
+        }
+      }
+
+      async function handleRequest(requestId, action) {
+        const token = localStorage.getItem("providerToken");
+
+        try {
+          const res = await fetch(
+            `/api/provider-dashboard/handle-request/${requestId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ action }),
+            }
+          );
+
+          const data = await res.json();
+
+          if (data.success) {
+            alert(
+              `Request ${
+                action === "accepted" ? "accepted" : "rejected"
+              } successfully.`
+            );
+            loadBookingRequests(); // Reload updated list
+          } else {
+            alert("Failed to update request.");
+          }
+        } catch (err) {
+          console.error("Error updating request:", err);
+          alert("Error updating request.");
+        }
+      }
+
+      async function loadProviderBookingHistory() {
+        const token = localStorage.getItem("providerToken");
+
+        try {
+          const res = await fetch("/api/provider-dashboard/booking-history", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            const tableBody = document.getElementById(
+              "providerBookingHistoryTable"
+            );
+            tableBody.innerHTML = "";
+
+            if (data.history.length === 0) {
+              tableBody.innerHTML = `<tr><td colspan="7">No past bookings found.</td></tr>`;
+              return;
+            }
+
+            data.history.forEach((request) => {
+              const row = document.createElement("tr");
+
+              row.innerHTML = `
+          <td>${request.customer_name}</td>
+          <td>${formatPreferredDate(request.preferred_date)}</td>
+          <td>${request.preferred_time}</td>
+          <td>${request.address}</td>
+          <td>${request.problem_statement}</td>
+          <td><span class="badge bg-${getStatusBadgeColor(request.status)}">${
+                request.status
+              }</span></td>
+        `;
+
+              tableBody.appendChild(row);
+            });
+          } else {
+            alert("Failed to load booking history.");
+          }
+        } catch (err) {
+          console.error("Error loading booking history:", err);
+          alert("Error loading booking history.");
+        }
+      }
+
+      function getStatusBadgeColor(status) {
+        switch (status) {
+          case "accepted":
+            return "success";
+          case "rejected":
+            return "danger";
+          case "completed":
+            return "primary";
+          default:
+            return "secondary";
+        }
       }
     </script>
   </body>

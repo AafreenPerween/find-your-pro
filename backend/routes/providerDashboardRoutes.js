@@ -5,7 +5,10 @@ const {
   getProviderProfile,
   updateProviderProfile,
   getProviderAvailability, // ✅ Ensure this function exists in the controller
-  updateProviderAvailability
+  updateProviderAvailability,
+  getProviderBookingRequests,
+  handleBookingRequest,
+  getProviderBookingHistory
 } = require("../controllers/providerDashboardController");
 
 const authenticate = require("../middleware/providerAuthMiddleware");
@@ -26,10 +29,16 @@ router.get("/profile", authenticate, getProviderProfile);
 // ✅ Update provider profile with optional image upload
 router.put("/profile", authenticate, upload.single("profile_pic"), updateProviderProfile);
 
-// ✅ Get Provider Availability
-// router.get("/:providerId/availability", getProviderAvailability);
 
 // ✅ Update Provider Availability
 router.put("/availability", authenticate, updateProviderAvailability);
+
+
+router.get('/booking-requests', authenticate, getProviderBookingRequests);
+router.patch('/handle-request/:requestId', authenticate, handleBookingRequest);
+
+router.get("/booking-history", authenticate, getProviderBookingHistory);
+
+
 
 module.exports = router; // ✅ Ensure correct export
