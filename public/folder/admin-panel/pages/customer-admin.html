@@ -115,7 +115,7 @@
       <div class="container-fluid">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Customer List</h3>
+            <h3 class="card-title"></h3>
           </div>
 
    
@@ -149,33 +149,7 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../dist/js/adminlte.min.js"></script>
 <script>
-  // async function fetchCustomers() {
-    // const res = await fetch('http://localhost:5000/api/admin/customers');
-    // const customers = await res.json();
-    // const table = document.getElementById('customerTableBody');
-    // table.innerHTML = '';
-   
-  //   fetch('http://localhost:5000/api/admin/customers')
-  //  .then(response => response.json())
-  //  .then(data => {
-  //     console.log('API Response:', data); // Log the actual response structure
-  //  })
-  //  .catch(error => console.error('Fetch Error:', error));
-  //   customers.forEach(c => {
-  //     table.innerHTML += `
-  //       <tr>
-  //         <td>${c.customer_id}</td>
-  //         <td>${c.name}</td>
-  //         <td>${c.email}</td>
-  //         <td>${c.phone}</td>
-  //         <td>${c.created_at}</td>
-  //       </tr>`;
-  //   });
-  // }
-
-  // document.addEventListener('DOMContentLoaded', fetchCustomers);
-
-
+ 
   async function fetchCustomers() {
     try {
         const response = await fetch('http://localhost:5000/api/admin/customers');
