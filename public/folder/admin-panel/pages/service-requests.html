@@ -1,67 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< HEAD
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Service Requests | Find You Pro</title>
-    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css" />
-    <link rel="stylesheet" href="../dist/css/adminlte.min.css" />
-  </head>
-  <body class="hold-transition sidebar-mini">
-    <div class="wrapper">
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#"
-              ><i class="fas fa-bars"></i
-            ></a>
-          </li>
-        </ul>
-      </nav>
-
-      <aside class="main-sidebar sidebar-dark-primary elevation-4">
-        <a href="../index.html" class="brand-link">
-          <img
-            src="../dist/img/AdminLTELogo.png"
-            alt="Logo"
-            class="brand-image img-circle elevation-3"
-          />
-          <span class="brand-text font-weight-light">Find You Pro</span>
-        </a>
-        <div class="sidebar">
-          <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column">
-              <li class="nav-item">
-                <a href="../index.html" class="nav-link">
-                  <i class="nav-icon fas fa-tachometer-alt"></i>
-                  <p>Dashboard</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./workers.html" class="nav-link">
-                  <i class="nav-icon fas fa-user-cog"></i>
-                  <p>Manage Workers</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="customer-admin.html" class="nav-link">
-                  <i class="nav-icon fas fa-users"></i>
-                  <p>Manage Customers</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a
-                  href="#
-            "
-                  class="nav-link active"
-                >
-                  <i class="nav-icon fas fa-briefcase"></i>
-                  <p>Service Requests</p>
-                </a>
-              </li>
-              <!-- <li class="nav-item">
-=======
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -154,7 +92,6 @@
             </a>
           </li>
           <!-- <li class="nav-item">
->>>>>>> 23e5381675fb40aca58338ffb5c40f55aa6cf2dd
             <a href="analytics.html" class="nav-link">
               <i class="nav-icon fas fa-chart-line"></i>
               <p>Analytics</p>
@@ -188,11 +125,20 @@
           </div>
         </div>
 
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+    <h3 class="card-title">Service Requests</h3>
+    <div class="d-flex gap-2">
+        <input type="text" id="searchRequestBar" class="form-control" placeholder="🔍 Search by customer or worker">
+        <input type="date" id="dateSearchRequest" class="form-control">
+    </div>
+</div> 
+
         <section class="content">
           <div class="container-fluid">
             <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Request List</h3>
+              <div class="card-header" text-align="center" style="text-align: center;">
+                <h3 class="card-title"></h3>
               </div>
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
@@ -200,7 +146,7 @@
                     <tr>
                       <th>ID</th>
                       <th>Customer</th>
-                      <th>Worker</th>
+                      <th>Provider</th>
                       <th>Service</th>
                       <th>Status</th>
                       <th>Date</th>
@@ -221,149 +167,15 @@
         reserved.
       </footer>
     </div>
-  
+ 
+    
 
-<<<<<<< HEAD
-    <script src="../plugins/jquery/jquery.min.js"></script>
-    <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../dist/js/adminlte.min.js"></script>
-    <script>
-      const fetchServiceRequests = async () => {
-        try {
-          const res = await fetch(
-            "http://localhost:5000/api/admin/api/requests",
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-=======
-    <div class="card-header d-flex justify-content-between align-items-center">
-    <h3 class="card-title">Service Requests</h3>
-    <div class="d-flex gap-2">
-        <input type="text" id="searchRequestBar" class="form-control" placeholder="🔍 Search by customer or worker">
-        <input type="date" id="dateSearchRequest" class="form-control">
-    </div>
-</div>
->>>>>>> 23e5381675fb40aca58338ffb5c40f55aa6cf2dd
 
-          if (res.ok) {
-            const data = await res.json();
-            console.log("Full response data:", data);
-            console.log("Inspecting first item in detail:");
-            console.log(JSON.stringify(data[0], null, 2));
 
-<<<<<<< HEAD
-            const tableBody = document.getElementById("requestTableBody");
-            tableBody.innerHTML = ""; // Clear any existing rows
-=======
-    <section class="content">
-      <div class="container-fluid">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Request List</h3>
-          </div>
-          <div class="card-body table-responsive p-0">
-            <table class="table table-hover text-nowrap">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Customer</th>
-                  <th>Provider</th>
-                  <th>Service</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody id="requestTableBody">
-                <!-- Dynamic rows go here -->
-          </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section> 
-  </div>
->>>>>>> 23e5381675fb40aca58338ffb5c40f55aa6cf2dd
-
-            data.forEach((request) => {
-              const row = document.createElement("tr");
-
-<<<<<<< HEAD
-              row.innerHTML = `
-          <td>${request.id}</td>
-          <td>${request.customer}</td>
-          <td>${request.provider}</td>
-          <td>${request.service_type}</td>
-          <td>${request.status}</td>
-          <td>${request.date}</td>
-        `;
-
-              tableBody.appendChild(row);
-            });
-          } else {
-            console.error("Failed to fetch requests:", res.statusText);
-          }
-        } catch (err) {
-          console.error("Error fetching service requests:", err);
-        }
-      };
-
-      fetchServiceRequests();
-    </script>
-  </body>
-</html>
-=======
 <script src="../plugins/jquery/jquery.min.js"></script>
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../dist/js/adminlte.min.js"></script>
 <script>
-//  const fetchServiceRequests = async () => {
-//   try {
-//     const res = await fetch('http://localhost:5000/api/admin/api/requests', {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     });
-
-//     if (res.ok) {
-//       const data = await res.json();
-//       console.log("Full response data:", data);
-// console.log("Inspecting first item in detail:");
-// console.log(JSON.stringify(data[0], null, 2));
-
-
-//       const tableBody = document.getElementById('requestTableBody');
-//       tableBody.innerHTML = ''; // Clear any existing rows
-
-//       data.forEach(request => {
-//         const row = document.createElement('tr');
-
-//         row.innerHTML = `
-//           <td>${request.id}</td>
-//           <td>${request.customer}</td>
-//           <td>${request.provider}</td>
-//           <td>${request.service_type}</td>
-//           <td>${request.status}</td>
-//           <td>${request.date}</td>
-//         `;
-
-//         tableBody.appendChild(row);
-//       });
-//     } else {
-//       console.error('Failed to fetch requests:', res.statusText);
-//     }
-//   } catch (err) {
-//     console.error('Error fetching service requests:', err);
-//   }
-// };
-
-// fetchServiceRequests();
-
-
 
   const fetchServiceRequests = async () => {
       try {
@@ -384,7 +196,7 @@
                   <td>${request.id}</td>
                   <td>${request.customer}</td>
                   <td>${request.provider}</td>
-                  <td>${request.service_type}</td>
+                  <td>${request.service}</td>
                   <td>${request.status}</td>
                   <td>${request.date}</td>
               `;
@@ -474,4 +286,3 @@
 
 </body>
 </html>
->>>>>>> 23e5381675fb40aca58338ffb5c40f55aa6cf2dd

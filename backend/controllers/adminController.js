@@ -103,7 +103,7 @@ exports.getDashboardData = async (req, res) => {
          c.name           AS customer,
          p.name           AS provider,
          r.status,
-         r.service_type,
+        p.service_type    AS service,
          DATE_FORMAT(r.created_at, '%Y-%m-%d') AS date
        FROM requests r
        LEFT JOIN customers c  ON r.customer_id = c.customer_id
