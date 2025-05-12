@@ -48,247 +48,224 @@
         cursor: pointer;
       }
 
+      /* Settings Box */
+      .settings-container {
+        max-width: 100%;
+        background: white; /* Bright contrast */
+        padding: 20px;
+        margin: 30%;
+        margin-top: 3%;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+      }
+      /* Headings */
+      h1 {
+        text-align: center;
+        color: #0077b6; /* Sea Blue */
+        margin-bottom: 20px;
+      }
 
-        
+      /* Labels & Inputs */
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #102e50; /* Stylish deep blue */
+      }
 
+      select,
+      input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background: #f0f0f0;
+      }
 
+      /* Button - Sea Blue */
+      .clsbttn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #0077b6; /* Sea Blue */
+        color: white;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
 
+      button:hover {
+        background-color: #005e94; /* Slightly darker hover effect */
+      }
 
+      .dark-mode {
+        background-color: #102e50;
+        color: white;
+      }
 
-   
-/* Settings Box */
-.settings-container {
-  
-   
-    max-width: 100%;
-    background: white; /* Bright contrast */
-    padding: 20px;
-    margin: 30%;
-    margin-top: 3%;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-       
-}
-/* Headings */
-h1 {
-    text-align: center;
-    color: #0077b6; /* Sea Blue */
-    margin-bottom: 20px;
-}
+      /* Input Fields in Dark Mode */
+      .dark-mode select,
+      .dark-mode input {
+        background-color: #1c3b5d;
+        color: white;
+        border: 1px solid #004080;
+      }
 
-/* Labels & Inputs */
-label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-    color: #102e50; /* Stylish deep blue */
-}
+      /* Button */
+      button {
+        background-color: #0077b6;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
 
-select, input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background: #f0f0f0;
-}
+      button:hover {
+        background-color: #005e94;
+      }
 
-/* Button - Sea Blue */
-.clsbttn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #0077b6; /* Sea Blue */
-    color: white;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
+      .dark-mode {
+        background-color: #0b1e38 !important; /* Darker navy blue */
+        color: white !important;
+      }
 
-button:hover {
-    background-color: #005e94; /* Slightly darker hover effect */
-}
+      /* Apply Dark Mode to all containers */
+      .dark-mode .settings-container,
+      .dark-mode .offcanvas,
+      .dark-mode .navbar,
+      .dark-mode main {
+        background-color: #08152a !important; /* Even darker for better contrast */
+        border: 1px solid #004080 !important;
+      }
 
+      /* Improve Text Visibility */
+      .dark-mode h1,
+      .dark-mode h2,
+      .dark-mode h3,
+      .dark-mode h4,
+      .dark-mode h5,
+      .dark-mode p,
+      .dark-mode label {
+        color: white !important;
+      }
 
+      /* Input Fields in Dark Mode */
+      .dark-mode select,
+      .dark-mode input {
+        background-color: #112443;
+        color: white;
+        border: 1px solid #004080;
+      }
 
+      /* Provider Cards (Explore Page) */
+      .dark-mode #providerList .card {
+        background-color: #112443 !important;
+        color: white !important;
+        border: 1px solid #004080 !important;
+      }
 
+      /* Buttons */
+      .dark-mode button {
+        background-color: #fcbf49 !important;
+        color: #102e50 !important;
+      }
 
+      .dark-mode button:hover {
+        background-color: #e09f3e !important;
+      }
 
-.dark-mode {
-    background-color: #102e50;
-    color: white;
-}
+      .dark-mode {
+        background-color: #2e3a4a !important; /* Soft gray with a subtle blue tone */
+        color: #ffffff !important; /* Bright white text for perfect contrast */
+      }
 
-/* Input Fields in Dark Mode */
-.dark-mode select,
-.dark-mode input {
-    background-color: #1c3b5d;
-    color: white;
-    border: 1px solid #004080;
-}
+      /* Navbar & Sidebar */
+      .dark-mode .navbar,
+      .dark-mode .offcanvas {
+        background-color: #37475b !important; /* Slightly lighter for distinction */
+        border-bottom: 2px solid #5a718e !important;
+      }
 
-/* Button */
-button {
-    background-color: #0077b6;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
+      /* Sidebar Links */
+      .dark-mode .sidebar-link {
+        color: #ffffff !important;
+      }
 
-button:hover {
-    background-color: #005e94;
-}
+      .dark-mode .sidebar-link:hover {
+        background-color: #465b77 !important; /* Gentle hover effect */
+      }
 
+      /* Cards & Containers */
+      .dark-mode .card,
+      .dark-mode .settings-container {
+        background-color: #3f4f63 !important; /* Balanced gray-blue */
+        border: 1px solid #5a718e !important;
+      }
 
+      /* Provider Cards (Explore Page) */
+      .dark-mode #providerList .card {
+        background-color: #3f4f63 !important;
+        color: white !important;
+        border: 1px solid #5a718e !important;
+      }
 
+      /* Input Fields */
+      .dark-mode .form-control,
+      .dark-mode select,
+      .dark-mode input {
+        background-color: #4a5c72 !important;
+        color: #ffffff;
+        border: 1px solid #6c85a1;
+      }
 
-.dark-mode {
-    background-color: #0b1e38 !important; /* Darker navy blue */
-    color: white !important;
-}
+      /* Booking Requests & Availability Tables */
+      .dark-mode table.table-bordered {
+        background-color: #3f4f63 !important;
+        color: #ffffff !important;
+        border: 1px solid #5a718e !important;
+      }
 
-/* Apply Dark Mode to all containers */
-.dark-mode .settings-container,
-.dark-mode .offcanvas,
-.dark-mode .navbar,
-.dark-mode main {
-    background-color: #08152a !important; /* Even darker for better contrast */
-    border: 1px solid #004080 !important;
-}
+      .dark-mode table.table-bordered th {
+        background-color: #4a5c72 !important;
+        color: #ffffff !important;
+      }
 
-/* Improve Text Visibility */
-.dark-mode h1,
-.dark-mode h2,
-.dark-mode h3,
-.dark-mode h4,
-.dark-mode h5,
-.dark-mode p,
-.dark-mode label {
-    color: white !important;
-}
+      /* Alerts & Notifications */
+      .dark-mode .alert {
+        background-color: #3f4f63 !important;
+        color: #ffffff !important;
+        border: 1px solid #5a718e !important;
+      }
 
-/* Input Fields in Dark Mode */
-.dark-mode select,
-.dark-mode input {
-    background-color: #112443;
-    color: white;
-    border: 1px solid #004080;
-}
+      /* Buttons */
+      .dark-mode button {
+        background-color: #4c88ff !important; /* Clean, modern blue */
+        color: white !important;
+        transition: 0.3s ease-in-out;
+      }
 
-/* Provider Cards (Explore Page) */
-.dark-mode #providerList .card {
-    background-color: #112443 !important;
-    color: white !important;
-    border: 1px solid #004080 !important;
-}
+      .dark-mode button:hover {
+        background-color: #3570e5 !important; /* Slightly darker on hover */
+      }
 
-/* Buttons */
-.dark-mode button {
-    background-color: #fcbf49 !important;
-    color: #102e50 !important;
-}
+      .dark-mode ::placeholder {
+        color: white !important;
+        opacity: 1; /* Ensure full visibility */
+      }
 
-.dark-mode button:hover {
-    background-color: #e09f3e !important;
-}
-
-
-
-.dark-mode {
-    background-color: #2e3a4a !important; /* Soft gray with a subtle blue tone */
-    color: #ffffff !important; /* Bright white text for perfect contrast */
-}
-
-/* Navbar & Sidebar */
-.dark-mode .navbar,
-.dark-mode .offcanvas {
-    background-color: #37475b !important; /* Slightly lighter for distinction */
-    border-bottom: 2px solid #5a718e !important;
-}
-
-/* Sidebar Links */
-.dark-mode .sidebar-link {
-    color: #ffffff !important;
-}
-
-.dark-mode .sidebar-link:hover {
-    background-color: #465b77 !important; /* Gentle hover effect */
-}
-
-/* Cards & Containers */
-.dark-mode .card,
-.dark-mode .settings-container {
-    background-color: #3f4f63 !important; /* Balanced gray-blue */
-    border: 1px solid #5a718e !important;
-}
-
-/* Provider Cards (Explore Page) */
-.dark-mode #providerList .card {
-    background-color: #3f4f63 !important;
-    color: white !important;
-    border: 1px solid #5a718e !important;
-}
-
-/* Input Fields */
-.dark-mode .form-control,
-.dark-mode select,
-.dark-mode input {
-    background-color: #4a5c72 !important;
-    color: #ffffff;
-    border: 1px solid #6c85a1;
-}
-
-/* Booking Requests & Availability Tables */
-.dark-mode table.table-bordered {
-    background-color: #3f4f63 !important;
-    color: #ffffff !important;
-    border: 1px solid #5a718e !important;
-}
-
-.dark-mode table.table-bordered th {
-    background-color: #4a5c72 !important;
-    color: #ffffff !important;
-}
-
-/* Alerts & Notifications */
-.dark-mode .alert {
-    background-color: #3f4f63 !important;
-    color: #ffffff !important;
-    border: 1px solid #5a718e !important;
-}
-
-/* Buttons */
-.dark-mode button {
-    background-color: #4c88ff !important; /* Clean, modern blue */
-    color: white !important;
-    transition: 0.3s ease-in-out;
-}
-
-.dark-mode button:hover {
-    background-color: #3570e5 !important; /* Slightly darker on hover */
-}
-
-
-
-.dark-mode ::placeholder {
-    color: white !important;
-    opacity: 1; /* Ensure full visibility */
-}
-
-/* Improve input contrast */
-.dark-mode input,
-.dark-mode select,
-.dark-mode textarea {
-    background-color: #4a5c72 !important;
-    color: white !important;
-    border: 1px solid #6c85a1 !important;
-}
-
-  </style>
+      /* Improve input contrast */
+      .dark-mode input,
+      .dark-mode select,
+      .dark-mode textarea {
+        background-color: #4a5c72 !important;
+        color: white !important;
+        border: 1px solid #6c85a1 !important;
+      }
+    </style>
   </head>
   <body>
     <!-- Navbar -->
@@ -369,7 +346,38 @@ button:hover {
 
         bookings: `
       <h2>My Bookings</h2>
-      <p>Track current and previous service requests here.</p>`,
+      <p>Track current and previous service requests here.</p>
+      <h2>Current Requests</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>Profession</th>
+      <th>Booking Date</th>
+      <th>Booking Time</th>
+      <th>Status</th>
+      <th>Request Date</th>
+    </tr>
+  </thead>
+  <tbody id="pendingRequestsTable"></tbody>
+</table>
+<h2>Booking History</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>Profession</th>
+      <th>Booking Date</th>
+      <th>Booking Time</th>
+      <th>Status</th>
+      <th>Request Date</th>
+    </tr>
+  </thead>
+  <tbody id="bookingHistoryTable"></tbody>
+</table>
+
+      
+      `,
 
         profile: `
       <h2>My Profile</h2>
@@ -467,6 +475,12 @@ button:hover {
                 $("#serviceFilter").on("change", function () {
                   loadProviders(this.value);
                 });
+              }, 100);
+            } else if (page === "bookings") {
+              setTimeout(loadCustomerBookings, 100);
+            } else if (page === "settings") {
+              setTimeout(() => {
+                applyTheme(localStorage.getItem("theme") || "light");
               }, 100);
             }
           }
@@ -611,6 +625,17 @@ button:hover {
               console.error("Failed to fetch provider availability");
               return alert("Unable to load availability data.");
             }
+            window.currentAvailableSlots = {};
+            availabilityData.availability.forEach(
+              ({ date, time_slot, is_available }) => {
+                if (is_available) {
+                  if (!window.currentAvailableSlots[date]) {
+                    window.currentAvailableSlots[date] = [];
+                  }
+                  window.currentAvailableSlots[date].push(time_slot);
+                }
+              }
+            );
 
             const availableDates = new Set();
             const availableSlots = {};
@@ -701,15 +726,12 @@ button:hover {
           .empty()
           .append(`<option value="">Select Time Slot</option>`);
 
-        const availableSlots = window.currentAvailableSlots; // ✅ Fix here
-
-        if (availableSlots && availableSlots[selectedDate]) {
-          availableSlots[selectedDate].forEach((slot) => {
-            timeSlotDropdown.append(
-              `<option value="${slot}">${
-                slot.charAt(0).toUpperCase() + slot.slice(1)
-              }</option>`
-            );
+        if (
+          window.currentAvailableSlots &&
+          window.currentAvailableSlots[selectedDate]
+        ) {
+          window.currentAvailableSlots[selectedDate].forEach((slot) => {
+            timeSlotDropdown.append(`<option value="${slot}">${slot}</option>`);
           });
           timeSlotDropdown.prop("disabled", false);
         } else {
@@ -725,13 +747,16 @@ button:hover {
 
         const formData = {
           provider_id: this.provider_id.value,
+          //service_type: document.getElementById("service_type").value,
           preferred_date: document.getElementById("preferred_date").value,
           preferred_time: document.getElementById("preferred_time").value,
           problem_statement: this.problem_statement.value,
         };
 
+        console.log("Booking request payload:", formData);
+
         try {
-          const res = await fetch("/api/customer/dashboard/book", {
+          const res = await fetch("/api/customer/dashboard/bookings", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -743,96 +768,189 @@ button:hover {
           const result = await res.json();
           alert(result.message || "Booking request submitted successfully!");
         } catch (err) {
-          console.error(err);
+          console.error("Error submitting booking request:", err);
           alert("Failed to submit booking request.");
         }
       });
+
+      function formatPreferredDate(dateString) {
+        const date = new Date(dateString);
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${month}/${day}/${year}`;
+      }
+
+      async function loadCustomerBookings() {
+        const token = localStorage.getItem("customerToken");
+
+        try {
+          const res = await fetch("/api/customer-dashboard/bookings", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            const pendingTable = document.getElementById(
+              "pendingRequestsTable"
+            );
+            const historyTable = document.getElementById("bookingHistoryTable");
+
+            // 🔍 Debug Logs
+            console.log("Pending Requests Table:", pendingTable);
+            console.log("Booking History Table:", historyTable);
+
+            if (!pendingTable || !historyTable) {
+              console.error(
+                "Booking history table elements are missing in the DOM."
+              );
+              alert("Booking history section could not be loaded.");
+              return;
+            }
+
+            pendingTable.innerHTML = data.pendingRequests
+              .map(
+                (request) => `
+        <tr>
+          <td>${request.provider_name || "Unknown"}</td>
+          <td>${request.provider_service || "Unknown"}</td>
+
+          <td>${formatPreferredDate(request.preferred_date)}</td>
+          <td>${request.preferred_time}</td>
+          <td>${request.status}</td>
+          <td>${new Date(request.created_at).toLocaleString()}</td>
+        </tr>
+      `
+              )
+              .join("");
+
+            historyTable.innerHTML = data.bookingHistory
+              .map(
+                (request) => `
+        <tr>
+          <td>${request.provider_name || "Unknown"}</td>
+          <td>${request.provider_service || "Unknown"}</td>
+          <td>${formatPreferredDate(request.preferred_date)}</td>
+          <td>${request.preferred_time}</td>
+          <td>${request.status}</td>
+          <td>${new Date(request.created_at).toLocaleString()}</td>
+        </tr>
+      `
+              )
+              .join("");
+          } else {
+            alert("Failed to load booking history.");
+          }
+        } catch (err) {
+          console.error("Error loading customer bookings:", err);
+          alert("Unable to fetch booking history.");
+        }
+      }
+
+      // document.addEventListener("DOMContentLoaded", loadCustomerBookings);
     </script>
-<script>
-    // Function to wait for an element before running logic
-    function waitForElement(selector, callback) {
+
+    <script>
+      // Function to wait for an element before running logic
+      function waitForElement(selector, callback) {
         const element = document.querySelector(selector);
         if (element) {
-            callback(element);
+          callback(element);
         } else {
-            setTimeout(() => waitForElement(selector, callback), 100); // Retry every 100ms
+          setTimeout(() => waitForElement(selector, callback), 100); // Retry every 100ms
         }
-    }
+      }
 
-    // Apply the theme (Dark or Light)
-    function applyTheme(theme) {
-        document.documentElement.classList.toggle("dark-mode", theme === "dark");
-        localStorage.setItem("theme", theme);
-        
-        const themeIcon = document.getElementById("themeIcon");
-        const themeText = document.getElementById("themeText");
-        
-        if (themeIcon && themeText) {
-            themeIcon.textContent = theme === "dark" ? "🌙" : "🌞";
-            themeText.textContent = theme === "dark" ? "Dark Mode" : "Light Mode";
-        }
-    }
-
-   document.addEventListener("DOMContentLoaded", function () {
-    const savedTheme = localStorage.getItem("theme") || "light";
-
-    function applyTheme(theme) {
-        document.documentElement.classList.toggle("dark-mode", theme === "dark");
+      // Apply the theme (Dark or Light)
+      function applyTheme(theme) {
+        document.documentElement.classList.toggle(
+          "dark-mode",
+          theme === "dark"
+        );
         localStorage.setItem("theme", theme);
 
         const themeIcon = document.getElementById("themeIcon");
         const themeText = document.getElementById("themeText");
 
         if (themeIcon && themeText) {
-            themeIcon.textContent = theme === "dark" ? "🌙" : "🌞";
-            themeText.textContent = theme === "dark" ? "Dark Mode" : "Light Mode";
+          themeIcon.textContent = theme === "dark" ? "🌙" : "🌞";
+          themeText.textContent = theme === "dark" ? "Dark Mode" : "Light Mode";
         }
-    }
+      }
 
-    applyTheme(savedTheme); // Apply theme immediately
+      document.addEventListener("DOMContentLoaded", function () {
+        const savedTheme = localStorage.getItem("theme") || "light";
 
-    function attachToggleListener() {
-        waitForElement("#themeToggle", function(themeToggle) {
+        function applyTheme(theme) {
+          document.documentElement.classList.toggle(
+            "dark-mode",
+            theme === "dark"
+          );
+          localStorage.setItem("theme", theme);
+
+          const themeIcon = document.getElementById("themeIcon");
+          const themeText = document.getElementById("themeText");
+
+          if (themeIcon && themeText) {
+            themeIcon.textContent = theme === "dark" ? "🌙" : "🌞";
+            themeText.textContent =
+              theme === "dark" ? "Dark Mode" : "Light Mode";
+          }
+        }
+
+        applyTheme(savedTheme); // Apply theme immediately
+
+        function attachToggleListener() {
+          waitForElement("#themeToggle", function (themeToggle) {
             themeToggle.removeEventListener("click", toggleTheme); // Ensure we don’t duplicate events
             themeToggle.addEventListener("click", toggleTheme);
-        });
-    }
+          });
+        }
 
-    function toggleTheme() {
-        const newTheme = document.documentElement.classList.contains("dark-mode") ? "light" : "dark";
-        applyTheme(newTheme);
-    }
+        function toggleTheme() {
+          const newTheme = document.documentElement.classList.contains(
+            "dark-mode"
+          )
+            ? "light"
+            : "dark";
+          applyTheme(newTheme);
+        }
 
-    // ✅ Reattach Toggle Listener Every Time Settings Page Loads
-    document.querySelectorAll(".sidebar-link").forEach((link) => {
-        link.addEventListener("click", function () {
+        // ✅ Reattach Toggle Listener Every Time Settings Page Loads
+        document.querySelectorAll(".sidebar-link").forEach((link) => {
+          link.addEventListener("click", function () {
             setTimeout(() => {
-                applyTheme(localStorage.getItem("theme") || "light");
-                attachToggleListener(); // Ensure toggle button remains functional
+              applyTheme(localStorage.getItem("theme") || "light");
+              attachToggleListener(); // Ensure toggle button remains functional
             }, 200);
+          });
         });
-    });
 
-    // ✅ Keep reattaching the event listener whenever content updates dynamically
-    const observer = new MutationObserver(() => {
-        attachToggleListener(); // Ensure toggle works even after switching pages
-    });
+        // ✅ Keep reattaching the event listener whenever content updates dynamically
+        const observer = new MutationObserver(() => {
+          attachToggleListener(); // Ensure toggle works even after switching pages
+        });
 
-    observer.observe(document.getElementById("main-content"), { childList: true, subtree: true });
-});  
+        observer.observe(document.getElementById("main-content"), {
+          childList: true,
+          subtree: true,
+        });
+      });
 
-// Ensure theme is applied when switching pages dynamically
-    function applyThemeOnPageSwitch() {
+      // Ensure theme is applied when switching pages dynamically
+      function applyThemeOnPageSwitch() {
         const savedTheme = localStorage.getItem("theme") || "light";
         applyTheme(savedTheme);
-    }
+      }
 
-    // Update theme when switching between pages dynamically
-    document.querySelectorAll(".sidebar-link").forEach((link) => {
+      // Update theme when switching between pages dynamically
+      document.querySelectorAll(".sidebar-link").forEach((link) => {
         link.addEventListener("click", function () {
-            setTimeout(applyThemeOnPageSwitch, 200); // Apply theme after page update
+          setTimeout(applyThemeOnPageSwitch, 200); // Apply theme after page update
         });
-    });
-</script>
+      });
+    </script>
   </body>
 </html>
