@@ -118,7 +118,14 @@ const createBookingRequest = async (req, res) => {
     // ✅ Prevent duplicate bookings (Ensure slot isn’t already booked)
     const [existingBooking] = await db.query(
       `SELECT request_id FROM requests 
-       WHERE provider_id = ? AND preferred_date = ? AND preferred_time = ?`,
+       WHERE provider_id = ? AND date = ? AND time_slot = ?`,
+      [provider_id, preferred_date, preferred_time]
+    );
+
+    await db.query(
+      `UPDATE provider_availability
+       SET is_available =0
+       WHERE provider_id = ? AND date = ? AND time_slot = ?`,
       [provider_id, preferred_date, preferred_time]
     );
 
@@ -133,12 +140,55 @@ const createBookingRequest = async (req, res) => {
       [customerId, provider_id, preferred_date, preferred_time, problem_statement]
     );
 
-    
+
     alert("Booking request submitted successfully! Redirecting to your Bookings...");
       window.location.href = "/customer/dashboard/bookings";
 
   } catch (error) {
     console.error("Error processing booking request:", error);
+  }
+};
+
+
+const cancelBooking = async (req, res) => {
+  const customerId = req.customer.customer_id;
+  const requestId = req.params.id;
+
+  try {
+    const [result] = await db.query(
+      `UPDATE requests SET status = 'cancelled' WHERE request_id = ? AND customer_id = ? AND status IN ('pending', 'accepted')`,
+      [requestId, customerId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ success: false, message: "Request not found or cannot be cancelled." });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error cancelling request:", err);
+    res.status(500).json({ success: false });
+  }
+};
+
+const completeBooking = async (req, res) => {
+  const customerId = req.customer.customer_id;
+  const requestId = req.params.id;
+
+  try {
+    const [result] = await db.query(
+      `UPDATE requests SET status = 'completed' WHERE request_id = ? AND customer_id = ? AND status = 'accepted'`,
+      [requestId, customerId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ success: false, message: "Request not found or not accepted." });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error marking complete:", err);
+    res.status(500).json({ success: false });
   }
 };
 
@@ -153,7 +203,7 @@ const getCustomerBookings = async (req, res) => {
               r.preferred_date, r.preferred_time, r.status, r.created_at 
        FROM requests r
        JOIN providers p ON r.provider_id = p.provider_id
-       WHERE r.customer_id = ? AND r.status = 'pending'
+       WHERE r.customer_id = ? AND r.status IN ('pending','accepted')
        ORDER BY r.created_at DESC`,
       [customerId]
     );
@@ -164,7 +214,7 @@ const getCustomerBookings = async (req, res) => {
               r.preferred_date, r.preferred_time, r.status, r.created_at 
        FROM requests r
        JOIN providers p ON r.provider_id = p.provider_id
-       WHERE r.customer_id = ? AND r.status IN ('accepted', 'rejected','completed')
+       WHERE r.customer_id = ? AND r.status IN ('cancelled', 'rejected','completed')
        ORDER BY r.created_at DESC`,
       [customerId]
     );
@@ -177,10 +227,54 @@ const getCustomerBookings = async (req, res) => {
   }
 };
 
+
+const updateCustomerBookingStatus = async (req, res) => {
+  const customerId = req.customer.customer_id;
+  const requestId = req.params.id;
+  const { newStatus } = req.body;
+
+  try {
+    // Get the request to ensure it's owned by the customer
+    const [[request]] = await db.query(
+      `SELECT * FROM requests WHERE request_id = ? AND customer_id = ?`,
+      [requestId, customerId]
+    );
+
+    if (!request) {
+      return res.status(404).json({ success: false, message: "Booking not found" });
+    }
+
+    // Update booking status
+    await db.query(
+      `UPDATE requests SET status = ? WHERE request_id = ?`,
+      [newStatus, requestId]
+    );
+
+    // If cancelled or rejected, mark the slot available again
+    if (newStatus === "cancelled" || newStatus === "rejected") {
+      await db.query(
+        `UPDATE provider_availability
+         SET is_available = true
+         WHERE provider_id = ? AND available_date = ? AND available_time = ?`,
+        [request.provider_id, request.preferred_date, request.preferred_time]
+      );
+    }
+
+    res.json({ success: true, message: "Booking status updated" });
+  } catch (error) {
+    console.error("Error updating booking status:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getCustomerProfile,
   updateCustomerProfile,
   getProviderDetails,
   createBookingRequest,
-  getCustomerBookings
+  getCustomerBookings,
+  cancelBooking,
+  completeBooking,
+  updateCustomerBookingStatus
+
 };
