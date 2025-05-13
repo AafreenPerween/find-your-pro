@@ -443,108 +443,108 @@
 
       const contentMap = {
         requests: `<h2>Booking Requests</h2><p>View and respond to incoming service requests from customers.</p>
-        <div class="container mt-4">
-  
-  <div id="bookingRequestsContainer" class="row gy-4">
-    <!-- Cards will be dynamically inserted here -->
-  </div>
-</div>
+              <div class="container mt-4">
 
-        `,
+        <div id="bookingRequestsContainer" class="row gy-4">
+          <!-- Cards will be dynamically inserted here -->
+        </div>
+      </div>
+
+              `,
         history: `<h2>Booking History</h2>
-<p>Here are your past service bookings.</p>
-<div class="table-responsive">
-  <table class="table table-bordered table-striped align-middle">
-    <thead class="table-dark">
-      <tr>
-        <th>Customer</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Address</th>
-        <th>Problem</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="providerBookingHistoryTable"></tbody>
-  </table>
-</div>
-</p>`,
+      <p>Here are your past service bookings.</p>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Address</th>
+              <th>Problem</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="providerBookingHistoryTable"></tbody>
+        </table>
+      </div>
+      </p>`,
         // reviews: `<h2>Reviews & Ratings</h2><p>Check what customers are saying about your services.</p>`,
         availability: `
-          <div id="manage-availability" class="dashboard-section">
-            <div class="container mt-4">
-              <h4 class="mb-3">Manage Availability</h4>
-              <form id="availabilityForm">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Day</th>
-                      <th>Morning (8:00-12:00)</th>
-                      <th>Afternoon (12:00-4:00)</th>
-                      <th>Evening (4:00-8:00)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="availabilityTableBody"></tbody>
-                </table>
-                <button type="submit" class="btn btn-primary">Save Availability</button>
-              </form>
-            </div>
-          </div>
-        `,
+                <div id="manage-availability" class="dashboard-section">
+                  <div class="container mt-4">
+                    <h4 class="mb-3">Manage Availability</h4>
+                    <form id="availabilityForm">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Day</th>
+                            <th>Morning (8:00-12:00)</th>
+                            <th>Afternoon (12:00-4:00)</th>
+                            <th>Evening (4:00-8:00)</th>
+                          </tr>
+                        </thead>
+                        <tbody id="availabilityTableBody"></tbody>
+                      </table>
+                      <button type="submit" class="btn btn-primary">Save Availability</button>
+                    </form>
+                  </div>
+                </div>
+              `,
         profile: `
-          <h2>My Profile</h2>
-          <form id="profileForm" class="row g-3">
-            <div class="col-md-4 text-center">
-              <label for="profilePic" class="profile-pic-label disabled">
-                <img src="default-profile.jpg" alt="Profile Picture" id="profilePicPreview" class="profile-pic-preview" onerror="this.src='default-profile.jpg'" />
-                <input type="file" class="d-none" id="profilePic" accept="image/*" />
-              </label>
-            </div>
-            <div class="col-md-8">
-              <div class="mb-2"><label for="provName" class="form-label">Full Name</label><input type="text" class="form-control" id="provName" disabled /></div>
-              <div class="mb-2"><label for="provEmail" class="form-label">Email</label><input type="email" class="form-control" id="provEmail" disabled /></div>
-              <div class="mb-2"><label for="provPhone" class="form-label">Phone</label><input type="tel" class="form-control" id="provPhone" disabled /></div>
-              <div class="mb-2"><label for="provAddress" class="form-label">Address</label><input type="text" class="form-control" id="provAddress" disabled /></div>
-              <div class="mb-2"><label for="provService" class="form-label">Service Type</label><input type="text" id="provService" class="form-control" disabled /></div>
-              <div class="mb-2"><label for="provExperience" class="form-label">Experience (Years)</label><input type="number" class="form-control" id="provExperience" min="1" max="50" disabled /></div>
-              <div class="mt-3">
-                <button type="button" id="editBtn" class="btn btn-outline-primary">Edit Profile</button>
-                <button type="submit" id="saveBtn" class="btn btn-primary d-none">Save Changes</button>
-                <button type="button" id="cancelBtn" class="btn btn-secondary d-none">Cancel</button>
-              </div>
-            </div>
-          </form>`,
+                <h2>My Profile</h2>
+                <form id="profileForm" class="row g-3">
+                  <div class="col-md-4 text-center">
+                    <label for="profilePic" class="profile-pic-label disabled">
+                      <img src="default-profile.jpg" alt="Profile Picture" id="profilePicPreview" class="profile-pic-preview" onerror="this.src='default-profile.jpg'" />
+                      <input type="file" class="d-none" id="profilePic" accept="image/*" />
+                    </label>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="mb-2"><label for="provName" class="form-label">Full Name</label><input type="text" class="form-control" id="provName" disabled /></div>
+                    <div class="mb-2"><label for="provEmail" class="form-label">Email</label><input type="email" class="form-control" id="provEmail" disabled /></div>
+                    <div class="mb-2"><label for="provPhone" class="form-label">Phone</label><input type="tel" class="form-control" id="provPhone" disabled /></div>
+                    <div class="mb-2"><label for="provAddress" class="form-label">Address</label><input type="text" class="form-control" id="provAddress" disabled /></div>
+                    <div class="mb-2"><label for="provService" class="form-label">Service Type</label><input type="text" id="provService" class="form-control" disabled /></div>
+                    <div class="mb-2"><label for="provExperience" class="form-label">Experience (Years)</label><input type="number" class="form-control" id="provExperience" min="1" max="50" disabled /></div>
+                    <div class="mt-3">
+                      <button type="button" id="editBtn" class="btn btn-outline-primary">Edit Profile</button>
+                      <button type="submit" id="saveBtn" class="btn btn-primary d-none">Save Changes</button>
+                      <button type="button" id="cancelBtn" class="btn btn-secondary d-none">Cancel</button>
+                    </div>
+                  </div>
+                </form>`,
         settings: ` <div class="settings-container" class="bodyclssttng" id="rootContainer">
-    <h1>Settings</h1>
+          <h1>Settings</h1>
 
-    <form id="settingsForm">
-        <label for="profileName">Full Name</label>
-        <input type="text" id="profileName" placeholder="Enter your name">
+          <form id="settingsForm">
+              <label for="profileName">Full Name</label>
+              <input type="text" id="profileName" placeholder="Enter your name">
 
-        <div class="theme-switcher">
-        
-           <label for="profileName" >theme</label>
-    <button id="themeToggle" class="form-control" id="themeMode">
-        <span id="themeIcon">🌞</span> <span id="themeText">Light Mode</span>
-    </button>
+              <div class="theme-switcher">
+
+                 <label for="profileName" >theme</label>
+          <button id="themeToggle" class="form-control" id="themeMode">
+              <span id="themeIcon">🌞</span> <span id="themeText">Light Mode</span>
+          </button>
 
 
-        <label for="notificationToggle">Enable Notifications</label>
-        <select id="notificationToggle">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
+              <label for="notificationToggle">Enable Notifications</label>
+              <select id="notificationToggle">
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+              </select>
 
-        <label for="languageSwitcher">Preferred Language</label>
-        <select id="languageSwitcher">
-            <option value="en">English</option>
-            <option value="hi">Hindi</option>
-            <option value="or">Odia</option>
-        </select>
+              <label for="languageSwitcher">Preferred Language</label>
+              <select id="languageSwitcher">
+                  <option value="en">English</option>
+                  <option value="hi">Hindi</option>
+                  <option value="or">Odia</option>
+              </select>
 
-        <button type="submit" class="clsbttn">Save Settings</button>
-    </form>
-</div>`,
+              <button type="submit" class="clsbttn">Save Settings</button>
+          </form>
+      </div>`,
         help: `<h2>Help & Support</h2><p>Need assistance? Contact our team for support.</p><ul><li>Email: support@findyourpro.com</li><li>Phone: +1-800-123-4567</li></ul>`,
       };
       const links = document.querySelectorAll(".sidebar-link");
@@ -677,7 +677,54 @@
         document.getElementById("editBtn").classList.toggle("d-none", enable);
       }
 
-      // Load Availability
+      document.addEventListener("click", function (e) {
+        if (e.target.id === "editBtn") toggleProfileEditing(true);
+        if (e.target.id === "cancelBtn") {
+          loadProviderProfile();
+          toggleProfileEditing(false);
+        }
+      });
+
+      document.addEventListener("submit", async function (e) {
+        if (e.target.id === "profileForm") {
+          e.preventDefault();
+          const token = localStorage.getItem("providerToken");
+
+          const formData = new FormData();
+          formData.append("name", document.getElementById("provName").value);
+          formData.append("phone", document.getElementById("provPhone").value);
+          formData.append(
+            "address",
+            document.getElementById("provAddress").value
+          );
+          formData.append(
+            "experience",
+            document.getElementById("provExperience").value
+          );
+
+          const pic = document.getElementById("profilePic").files[0];
+          if (pic) formData.append("profile_pic", pic);
+
+          try {
+            const res = await fetch("/api/provider/dashboard/profile", {
+              method: "PUT",
+              headers: { Authorization: `Bearer ${token}` },
+              body: formData,
+            });
+
+            const result = await res.json();
+            showAlert(
+              "success",
+              result.message || "Profile updated successfully."
+            );
+            loadProviderProfile();
+          } catch (err) {
+            console.error(err);
+            showAlert("danger", "Failed to update profile.");
+          }
+        }
+      });
+
       // ✅ Load Provider Availability from Backend
       async function loadAvailability() {
         const token = localStorage.getItem("providerToken");
@@ -881,27 +928,29 @@
               card.className = "col-md-6 col-lg-4";
 
               card.innerHTML = `
-          <div class="card shadow-sm rounded-4 h-100 p-4">
-            <div class="card-body  ">
-              <h5 class="card-title">${request.customer_name}</h5><br>
-              <h6 class="card-subtitle mb-2 text-muted">${formatPreferredDate(
-                request.preferred_date
-              )} at ${request.preferred_time}</h6>
-               <p class="card-text">Address: ${request.customer_address}</p>
-              <p class="card-text"><strong>Problem:</strong> ${
-                request.problem_statement
-              }</p>
-              <div class="d-flex justify-content-end gap-2">
-                <button class="btn btn-success btn-sm" onclick="handleRequest('${
-                  request.request_id
-                }', 'accepted')">Accept</button>
-                <button class="btn btn-danger btn-sm" onclick="handleRequest('${
-                  request.request_id
-                }', 'rejected')">Reject</button>
-              </div>
-            </div>
-          </div>
-        `;
+                <div class="card shadow-sm rounded-4 h-100 p-4">
+                  <div class="card-body  ">
+                    <h5 class="card-title">${request.customer_name}</h5><br>
+                    <h6 class="card-subtitle mb-2 text-muted">${formatPreferredDate(
+                      request.preferred_date
+                    )} at ${request.preferred_time}</h6>
+                     <p class="card-text">Address: ${
+                       request.customer_address
+                     }</p>
+                    <p class="card-text"><strong>Problem:</strong> ${
+                      request.problem_statement
+                    }</p>
+                    <div class="d-flex justify-content-end gap-2">
+                      <button class="btn btn-success btn-sm" onclick="handleRequest('${
+                        request.request_id
+                      }', 'accepted')">Accept</button>
+                      <button class="btn btn-danger btn-sm" onclick="handleRequest('${
+                        request.request_id
+                      }', 'rejected')">Reject</button>
+                    </div>
+                  </div>
+                </div>
+              `;
 
               container.appendChild(card);
             });
@@ -965,6 +1014,7 @@
             const tableBody = document.getElementById(
               "providerBookingHistoryTable"
             );
+
             tableBody.innerHTML = "";
 
             if (data.history.length === 0) {
@@ -976,15 +1026,15 @@
               const row = document.createElement("tr");
 
               row.innerHTML = `
-          <td>${request.customer_name}</td>
-          <td>${formatPreferredDate(request.preferred_date)}</td>
-          <td>${request.preferred_time}</td>
-          <td>${request.address}</td>
-          <td>${request.problem_statement}</td>
-          <td><span class="badge bg-${getStatusBadgeColor(request.status)}">${
-                request.status
-              }</span></td>
-        `;
+                <td>${request.customer_name}</td>
+                <td>${formatPreferredDate(request.preferred_date)}</td>
+                <td>${request.preferred_time}</td>
+                <td>${request.address}</td>
+                <td>${request.problem_statement}</td>
+                <td><span class="badge bg-${getStatusBadgeColor(
+                  request.status
+                )}">${request.status}</span></td>
+              `;
 
               tableBody.appendChild(row);
             });

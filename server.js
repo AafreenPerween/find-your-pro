@@ -45,6 +45,7 @@ app.get("/api/provider/:providerId/availability", providerDashboardController.ge
 // ✅ Ensure availability update route is registered
 app.put("/api/provider/availability", providerDashboardController.updateProviderAvailability);
 
+
 // app.use("/uploads", express.static("uploads"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
