@@ -5,6 +5,7 @@ const path = require("path");
 // ✅ Get Provider Profile
 const getProviderProfile = async (req, res) => {
   const providerId = req.provider?.provider_id;
+   console.log("Provider Profile fetched:", providerId);
 
   if (!providerId) {
     console.error("Error: Provider ID is missing from request.");
@@ -16,7 +17,7 @@ const getProviderProfile = async (req, res) => {
       "SELECT provider_id, name, email, phone, address, service_type, experience, profile_pic FROM providers WHERE provider_id = ?",
       [providerId]
     );
-
+   
     if (!provider.length) {
       return res.status(404).json({ success: false, message: "Provider not found" });
     }

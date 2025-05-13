@@ -1,6 +1,7 @@
 // backend/controllers/publicProviderController.js
 const db = require("../config/db");
 
+
 const getProviderById = async (req, res) => {
   const providerId = req.params.id;
 
