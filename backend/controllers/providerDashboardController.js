@@ -68,79 +68,79 @@ const updateProviderProfile = async (req, res) => {
 
 // ✅ Fetch Provider Availability (Correct Date Format)
 const getProviderAvailability = async (req, res) => {
-  const providerId = req.params.providerId;
-  console.log(`Fetching availability for provider ID: ${req.params.providerId}`);
+    const providerId = req.params.providerId || req.provider?.provider_id; // ✅ Try fetching from both params and authentication
+    console.log(`Fetching availability for provider ID: ${providerId}`);
 
-  if (!providerId) {
-    console.error("Error: Provider ID is missing from request.");
-    return res.status(400).json({ success: false, message: "Provider ID is required" });
-  }
+    if (!providerId) {
+        console.error("Error: Provider ID is missing from request.");
+        return res.status(400).json({ success: false, message: "Provider ID is required" });
+    }
 
-  try {
-    console.log(`Fetching availability for provider: ${providerId}`);
+    try {
+        const [availability] = await db.query(
+            `SELECT DATE_FORMAT(date, '%Y-%m-%d') AS date, time_slot, is_available 
+             FROM provider_availability 
+             WHERE provider_id = ? 
+             ORDER BY date ASC, FIELD(time_slot, 'morning', 'afternoon', 'evening')`,
+            [providerId]
+        );
 
-    const [availability] = await db.query(
-      `SELECT DATE_FORMAT(date, '%Y-%m-%d') AS date, time_slot, is_available 
-       FROM provider_availability 
-       WHERE provider_id = ? 
-       ORDER BY date ASC, FIELD(time_slot, 'morning', 'afternoon', 'evening')`,
-      [providerId]
-    );
-    console.log("Availability fetched for provider:", providerId, availability);
-    console.log("Availability fetched:", JSON.stringify(availability, null, 2));
-    console.log("Incoming request for provider availability:", req.url);
+        // ✅ Ensure format matches frontend checkboxes
+        const formattedAvailability = availability.map(({ date, time_slot, is_available }) => ({
+            checkbox_id: `${date}-${time_slot}`, // ✅ Match frontend format
+            date,
+            time_slot,
+            is_available,
+        }));
 
-    res.json({ success: true, availability });
-  } catch (error) {
-    console.error("Error fetching provider availability:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
+        console.log("Availability fetched:", JSON.stringify(formattedAvailability, null, 2));
+        res.json({ success: true, availability: formattedAvailability });
+    } catch (error) {
+        console.error("Error fetching provider availability:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
 };
-
 // ✅ Update Provider Availability (Correct Date Handling)
 const updateProviderAvailability = async (req, res) => {
-  const providerId = req.provider?.provider_id;
-  const availabilityUpdates = req.body.availability;
+    const providerId = req.provider?.provider_id || req.body.providerId;
+    console.log("🔍 Backend is using Provider ID:", providerId);
+    const availabilityUpdates = req.body.availability;
 
-  if (!providerId) {
-    console.error("Error: Provider authentication failed or provider ID missing.");
-    return res.status(401).json({ success: false, message: "Unauthorized: Provider ID is missing" });
-  }
+    if (!providerId) {
+        console.error("Error: Provider authentication failed or provider ID missing.");
+        return res.status(401).json({ success: false, message: "Unauthorized: Provider ID is missing" });
+    }
 
-  if (!Array.isArray(availabilityUpdates)) {
-    return res.status(400).json({ success: false, message: "Invalid availability format" });
-  }
+    if (!Array.isArray(availabilityUpdates)) {
+        return res.status(400).json({ success: false, message: "Invalid availability format" });
+    }
 
-  try {
-    console.log(`Updating availability for provider: ${providerId}`);
+    try {
+        console.log(`Updating availability for provider: ${providerId}`);
 
-    const updatePromises = availabilityUpdates.map(({ date, time_slot, is_available }) => {
-      console.log("Received Date:", date);
+        // ✅ Verify each update happens properly
+        const updateResults = await Promise.all(availabilityUpdates.map(({ date, time_slot, is_available }) => {
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(date)) {
+                console.error("Invalid date format received:", date);
+                return Promise.reject("Invalid date format");
+            }
 
-      // Ensure date follows correct format YYYY-MM-DD
-      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-      if (!dateRegex.test(date)) {
-        console.error("Invalid date format received:", date);
-        return res.status(400).json({ success: false, message: "Invalid date format" });
-      }
+            return db.query(
+                `INSERT INTO provider_availability (provider_id, date, time_slot, is_available)
+                 VALUES (?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE is_available = VALUES(is_available)`,
+                [providerId, date, time_slot, is_available]
+            );
+        }));
 
-      return db.query(
-        `INSERT INTO provider_availability (provider_id, date, time_slot, is_available)
-         VALUES (?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE is_available = VALUES(is_available)`,
-        [providerId, date, time_slot, is_available]
-      );
-    });
-
-    await Promise.all(updatePromises);
-
-    res.json({ success: true, message: "Availability updated successfully" });
-  } catch (error) {
-    console.error("Error updating availability:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
+        console.log("Availability update results:", JSON.stringify(updateResults, null, 2));
+        res.json({ success: true, message: "Availability updated successfully" });
+    } catch (error) {
+        console.error("Error updating availability:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
 };
-
 
 const getProviderBookingRequests = async (req, res) => {
   const providerId = req.provider.provider_id;

@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Provider Dashboard</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./folder/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -471,25 +474,29 @@
       </p>`,
         // reviews: `<h2>Reviews & Ratings</h2><p>Check what customers are saying about your services.</p>`,
         availability: `
-                <div id="manage-availability" class="dashboard-section">
-                  <div class="container mt-4">
-                    <h4 class="mb-3">Manage Availability</h4>
-                    <form id="availabilityForm">
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Day</th>
-                            <th>Morning (8:00-12:00)</th>
-                            <th>Afternoon (12:00-4:00)</th>
-                            <th>Evening (4:00-8:00)</th>
-                          </tr>
-                        </thead>
-                        <tbody id="availabilityTableBody"></tbody>
-                      </table>
-                      <button type="submit" class="btn btn-primary">Save Availability</button>
-                    </form>
-                  </div>
-                </div>
+              <!-- ✅ Availability Management Section -->
+ <div id="manage-availability" class="dashboard-section">
+    <div class="container mt-4">
+        <h4 class="mb-3">Manage Availability</h4>
+
+           <div id="alertContainer"></div>
+
+        <form id="availabilityForm">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Morning (8:00-12:00)</th>
+                        <th>Afternoon (12:00-4:00)</th>
+                        <th>Evening (4:00-8:00)</th>
+                    </tr>
+                </thead>
+                <tbody id="availabilityTableBody"></tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Save Availability</button>
+        </form>
+    </div>
+</div>
               `,
         profile: `
                 <h2>My Profile</h2>
@@ -607,25 +614,27 @@
 
       document.querySelector('.sidebar-link[data-page="requests"]').click();
 
+
+
+ 
       // Load Provider Profile
       async function loadProviderProfile() {
-        const token = localStorage.getItem("providerToken");
+       
 
-        let providerId = localStorage.getItem("providerId");
+       const token = localStorage.getItem("providerToken");
 
-        if (!providerId) {
-          console.warn("Provider ID missing, retrying...");
-          await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 500ms
-          providerId = localStorage.getItem("providerId");
-        }
+       let providerId = localStorage.getItem("providerId");
 
-        console.log("Final retrieved provider ID:", providerId);
+       if (!providerId) {
+    console.warn("Provider ID missing, retrying...");
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 500ms
+    providerId = localStorage.getItem("providerId");
 
-        if (!providerId) {
-          console.error("Error: Provider ID is still missing.");
-          return;
-        }
-
+    if (!providerId) { // ✅ Only set a default if needed
+        console.error("❌ Provider ID is still missing.");
+        return;
+    }
+}
         try {
           const res = await fetch("/api/provider/dashboard/profile", {
             headers: { Authorization: `Bearer ${token}` },
@@ -725,168 +734,272 @@
         }
       });
 
-      // ✅ Load Provider Availability from Backend
-      async function loadAvailability() {
-        const token = localStorage.getItem("providerToken");
-        const providerId = localStorage.getItem("providerId"); // ✅ Retrieve provider ID correctly
+ async function loadAvailability() {
+    const token = localStorage.getItem("providerToken");
 
-        console.log("Stored provider ID from Local Storage:", providerId); // ✅ Debug log
+    if (!token) {
+        console.error("❌ No authentication token found.");
+        showAlert("danger", "Session expired. Please log in again.");
+        return;
+    }
 
-        if (!providerId) {
-          console.error("Error: Provider ID is still missing.");
-          return;
+    // ✅ Retrieve providerId ONLY from profile API
+    let providerId;
+    try {
+        const profileRes = await fetch("/api/provider/dashboard/profile", { headers: { Authorization: `Bearer ${token}` } });
+        const profileData = await profileRes.json();
+
+        if (profileData.success && profileData.provider) {
+            providerId = profileData.provider.provider_id;
+        } else {
+            console.error("❌ Failed to fetch provider profile.");
+            return;
         }
+    } catch (error) {
+        console.error("❌ Error retrieving provider ID from profile API:", error);
+        return;
+    }
+
+    console.log("Stored Provider ID for Availability Fetch:", providerId);
+
+    if (!providerId) {
+        console.error("❌ Provider ID is still missing.");
+        return;
+    }
+
+    renderAvailabilityTable(); // ✅ Ensure table is rendered before fetching data
+
+    setTimeout(async () => {
+        console.log("✅ Waiting for table to be ready before fetching availability...");
 
         try {
-          const res = await fetch(`/api/provider/${providerId}/availability`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await res.json();
-
-          console.log(
-            "Received availability data:",
-            JSON.stringify(data, null, 2)
-          ); // ✅ Debug log
-
-          if (data.success && data.availability) {
-            data.availability.forEach(({ date, time_slot, is_available }) => {
-              const checkboxID = `${date}-${time_slot}`;
-              const checkbox = document.getElementById(checkboxID);
-
-              if (checkbox) {
-                checkbox.checked = is_available;
-              } else {
-                console.warn(`Checkbox not found for ID: ${checkboxID}`);
-              }
+            const res = await fetch(`/api/provider/${providerId}/availability`, {
+                headers: { Authorization: `Bearer ${token}` },
             });
-          }
+
+            const data = await res.json();
+            console.log("Received Availability Data:", JSON.stringify(data, null, 2));
+
+            data.availability.forEach(({ checkbox_id, is_available }) => {
+                console.log(`🔎 Checking Checkbox ID: ${checkbox_id}`);
+
+                const checkbox = document.getElementById(checkbox_id);
+                if (checkbox) {
+                    checkbox.checked = is_available;
+                } else {
+                    console.warn(`❌ Checkbox NOT found for ID: ${checkbox_id}`);
+                }
+            });
         } catch (err) {
-          console.error("Error loading availability:", err);
+            console.error("❌ Error loading availability:", err);
         }
-      }
+    }, 1500); // ✅ Increased delay ensures table is fully rendered before fetching data
+}
 
-      // ✅ Render Availability Table for Editing
-      function renderAvailabilityTable() {
-        const slots = ["morning", "afternoon", "evening"];
-        const tableBody = document.getElementById("availabilityTableBody");
-        tableBody.innerHTML = "";
+function renderAvailabilityTable() {
+    const slots = ["morning", "afternoon", "evening"];
+    const tableBody = document.getElementById("availabilityTableBody");
+    tableBody.innerHTML = ""; // ✅ Clear previous content before rendering
 
-        const today = new Date();
-        const weekdays = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ];
+    const today = new Date();
+    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-        for (let i = 0; i < 7; i++) {
-          let date = new Date();
-          date.setDate(today.getDate() + i);
+    for (let i = 0; i < 7; i++) {
+        let date = new Date();
+        date.setDate(today.getDate() + i);
 
-          let formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-          let weekday = weekdays[date.getDay()]; // ✅ Correct weekday display
+        let formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+        let weekday = weekdays[date.getDay()];
 
-          const row = document.createElement("tr");
+        const row = document.createElement("tr");
 
-          const dateCell = document.createElement("td");
-          dateCell.innerHTML = `<input type="text" value="${formattedDate}" class="form-control" readonly>`;
-          row.appendChild(dateCell);
+        const dateCell = document.createElement("td");
+        dateCell.innerHTML = `<input type="text" value="${formattedDate}" class="form-control" readonly>`;
+        row.appendChild(dateCell);
 
-          slots.forEach((slot) => {
+        slots.forEach((slot) => {
             const slotCell = document.createElement("td");
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.id = `${formattedDate}-${slot}`;
+            checkbox.id = `${formattedDate}-${slot}`; // ✅ Ensures checkbox ID matches backend format
             checkbox.classList.add("form-check-input");
             slotCell.appendChild(checkbox);
             row.appendChild(slotCell);
-          });
+        });
 
-          tableBody.appendChild(row);
+        tableBody.appendChild(row);
+    }
+
+    console.log("✅ Availability table fully rendered.");
+}
+
+document.addEventListener("submit", async function (e) {
+    if (e.target.id === "availabilityForm") {
+        e.preventDefault();
+
+        const token = localStorage.getItem("providerToken");
+
+        // ✅ Fetch providerId dynamically from profile API before submitting
+        let providerId;
+        try {
+            const profileRes = await fetch("/api/provider/dashboard/profile", { headers: { Authorization: `Bearer ${token}` } });
+            const profileData = await profileRes.json();
+
+            if (profileData.success && profileData.provider) {
+                providerId = profileData.provider.provider_id;
+            } else {
+                console.error("❌ Failed to fetch provider profile.");
+                return;
+            }
+        } catch (error) {
+            console.error("❌ Error retrieving provider ID from profile API:", error);
+            return;
         }
-      }
 
-      // ✅ Handle Availability Submission
-      document.addEventListener("submit", async function (e) {
-        if (e.target.id === "availabilityForm") {
-          e.preventDefault();
-
-          const token = localStorage.getItem("providerToken");
-          const providerId = localStorage.getItem("providerId");
-
-          console.log("🔹 Stored Provider Token:", token); // ✅ Check if token exists
-          console.log("🔹 Stored Provider ID:", providerId); // ✅ Check if provider_id exists
-
-          if (!token) {
-            console.error("❌ Error: No authentication token found.");
+        if (!token || !providerId) {
+            console.error("❌ Error: Missing authentication token or provider ID.");
+            showAlert("danger", "Session expired or provider ID missing.");
             return;
-          }
+        }
 
-          if (!providerId) {
-            console.error("❌ Error: Provider ID is missing.");
-            return;
-          }
+        const availabilityData = [];
+        const slots = ["morning", "afternoon", "evening"];
 
-          if (!token) {
-            console.error("❌ Error: No authentication token found.");
-            return;
-          } // ✅ Fix provider ID retrieval
+        document.querySelectorAll("#availabilityTableBody tr").forEach((row) => {
+            const dateInput = row.querySelector("td input[type='text']");
+            if (!dateInput) return;
 
-          if (!providerId) {
-            console.error("Error: Provider ID is missing.");
-            return;
-          }
+            const formattedDate = dateInput.value;
 
-          const availabilityData = [];
-          const slots = ["morning", "afternoon", "evening"];
-
-          document
-            .querySelectorAll("#availabilityTableBody tr")
-            .forEach((row) => {
-              const dateInput = row.querySelector("td input[type='text']");
-              if (!dateInput) return;
-
-              const formattedDate = dateInput.value;
-
-              slots.forEach((slot) => {
-                const checkbox = row.querySelector(
-                  `td input[id="${formattedDate}-${slot}"]`
-                );
-
+            slots.forEach((slot) => {
+                const checkbox = row.querySelector(`td input[id="${formattedDate}-${slot}"]`);
                 availabilityData.push({
-                  date: formattedDate,
-                  time_slot: slot,
-                  is_available: checkbox && checkbox.checked,
+                    date: formattedDate,
+                    time_slot: slot,
+                    is_available: checkbox && checkbox.checked,
                 });
-              });
             });
+        });
 
-          console.log("Final Availability Data:", availabilityData);
+        console.log("Final Availability Data:", availabilityData);
 
-          try {
+        try {
             const res = await fetch("/api/provider/availability", {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "", // ✅ Ensure correct format
-              },
-              body: JSON.stringify({ availability: availabilityData }),
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ availability: availabilityData }),
             });
 
-            console.log(`getting thisngs,${res}`);
             const result = await res.json();
             showAlert(result.success ? "success" : "danger", result.message);
-          } catch (err) {
+        } catch (err) {
             console.error("Error saving availability:", err);
             showAlert("danger", "Failed to update availability.");
-          }
         }
-      });
+    }
+});
+
+function showAlert(type, message) {
+    alert(message);
+}
+      // ✅ Handle Availability Submission
+    document.addEventListener("submit", async function (e) {
+    if (e.target.id === "availabilityForm") {
+        e.preventDefault();
+
+        const token = localStorage.getItem("providerToken");
+
+        // ✅ Fetch providerId dynamically from profile API before submitting
+        let providerId;
+        try {
+            const profileRes = await fetch("/api/provider/dashboard/profile", { headers: { Authorization: `Bearer ${token}` } });
+            const profileData = await profileRes.json();
+
+            if (profileData.success && profileData.provider) {
+                providerId = profileData.provider.provider_id;
+            } else {
+                console.error("❌ Failed to fetch provider profile.");
+                return;
+            }
+        } catch (error) {
+            console.error("❌ Error retrieving provider ID from profile API:", error);
+            return;
+        }
+
+        if (!token || !providerId) {
+            console.error("❌ Error: Missing authentication token or provider ID.");
+            showAlert("danger", "Session expired or provider ID missing.");
+            return;
+        }
+
+        const availabilityData = [];
+        const slots = ["morning", "afternoon", "evening"];
+
+        document.querySelectorAll("#availabilityTableBody tr").forEach((row) => {
+            const dateInput = row.querySelector("td input[type='text']");
+            if (!dateInput) return;
+
+            const formattedDate = dateInput.value;
+
+            slots.forEach((slot) => {
+                const checkbox = row.querySelector(`td input[id="${formattedDate}-${slot}"]`);
+                availabilityData.push({
+                    date: formattedDate,
+                    time_slot: slot,
+                    is_available: checkbox && checkbox.checked,
+                });
+            });
+        });
+
+        console.log("Final Availability Data:", availabilityData);
+
+        try {
+            const res = await fetch("/api/provider/availability", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ availability: availabilityData }),
+            });
+
+            const result = await res.json();
+            
+            // ✅ Show success message instead of reloading the table
+            showAlert(result.success ? "success" : "danger", result.message);
+        } catch (err) {
+            console.error("Error saving availability:", err);
+            showAlert("danger", "Failed to update availability.");
+        }
+    }
+});
+function showAlert(type, message) {
+    let alertContainer = document.getElementById("alertContainer");
+
+    // ✅ If there's no alert container, create one
+  function showAlert(type, message) {
+    let alertContainer = document.getElementById("alertContainer");
+
+    // ✅ Check if alertContainer exists in the page
+    if (!alertContainer) {
+        console.error("❌ Error: Alert container is missing in HTML.");
+        return;
+    }
+
+    // ✅ Add the message dynamically
+    alertContainer.innerHTML = `<div class="alert alert-${type} mt-3">${message}</div>`;
+
+    console.log("✅ Success message displayed:", message);
+
+    // ✅ Keep message visible before fading out
+    setTimeout(() => {
+        alertContainer.innerHTML = "";
+    }, 3000);
+}
+}
 
       // ✅ Display Alerts
       function showAlert(type, message) {

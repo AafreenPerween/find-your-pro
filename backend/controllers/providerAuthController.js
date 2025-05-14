@@ -42,7 +42,7 @@ const loginProvider = async (req, res) => {
         }
 
         // Fetch provider from DB using async/await
-        const [rows] = await db.query("SELECT * FROM providers WHERE email = ?", [email]);
+       const [rows] = await db.query("SELECT provider_id, name, email, password, service_type FROM providers WHERE email = ?", [email]);
 
         if (rows.length === 0) {
             console.log("❌ Provider not found in database");
@@ -60,13 +60,15 @@ const loginProvider = async (req, res) => {
             console.log("❌ Incorrect password");
             return res.status(401).json({ success: false, message: "Invalid email or password" });
         }
-
+           console.log("🔍 Provider ID Before Token Creation:", provider.provider_id);
         // Generate JWT Token
         const token = jwt.sign(
-            { provider_id: provider.provider_id },  // ✅ Use provider from rows[0]
-            process.env.JWT_SECRET, 
-            { expiresIn: "1h" }
-        );
+    { provider_id: provider.provider_id }, // ✅ Ensure provider_id exists
+    process.env.JWT_SECRET, 
+    { expiresIn: "1h" }
+);
+
+console.log("🔹 JWT Token Created:", token); // ✅ Debug token
         
         // Send token in response
         res.json({ 

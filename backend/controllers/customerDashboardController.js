@@ -118,7 +118,7 @@ const createBookingRequest = async (req, res) => {
     // ✅ Prevent duplicate bookings (Ensure slot isn’t already booked)
     const [existingBooking] = await db.query(
       `SELECT request_id FROM requests 
-       WHERE provider_id = ? AND date = ? AND time_slot = ?`,
+       WHERE provider_id = ? AND preferred_date = ? AND preferred_time= ?`,
       [provider_id, preferred_date, preferred_time]
     );
 
@@ -141,8 +141,10 @@ const createBookingRequest = async (req, res) => {
     );
 
 
-    alert("Booking request submitted successfully! Redirecting to your Bookings...");
-      window.location.href = "/customer/dashboard/bookings";
+    return res.json({
+    success: true,
+    message: "Booking request submitted successfully! Redirecting to your Bookings..."
+});
 
   } catch (error) {
     console.error("Error processing booking request:", error);

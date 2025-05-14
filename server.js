@@ -34,6 +34,7 @@ app.use("/api/provider-dashboard", require("./backend/routes/providerDashboardRo
 
 
 const providerRoutes = require('./backend/routes/providersProfile');
+
 app.use('/api/providers', providerRoutes);
 
 app.use('/api/admin', require('./backend/routes/adminRoutes'));
@@ -43,7 +44,10 @@ const providerDashboardController = require("./backend/controllers/providerDashb
 app.get("/api/provider/:providerId/availability", providerDashboardController.getProviderAvailability);
 
 // ✅ Ensure availability update route is registered
-app.put("/api/provider/availability", providerDashboardController.updateProviderAvailability);
+// app.put("/api/provider/availability", providerDashboardController.updateProviderAvailability);
+const authenticateProvider = require("./backend/middleware/providerAuthMiddleware");
+
+app.put("/api/provider/availability", authenticateProvider, providerDashboardController.updateProviderAvailability);
 
 
 // app.use("/uploads", express.static("uploads"));
